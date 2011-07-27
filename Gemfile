@@ -2,6 +2,9 @@ source :rubygems
 
 gem "rails", "2.3.5"
 gem "rack", "1.0.1"
+gem "garb", "0.9.1"
+gem "savon", "0.9.6"
+gem "will_paginate", "2.3.15"
 
 gem "coderay", "~> 0.9.7"
 gem "i18n", "~> 0.4.2"
