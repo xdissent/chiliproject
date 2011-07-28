@@ -7,6 +7,7 @@ gem "savon", "0.9.6"
 gem "will_paginate", "2.3.15"
 gem "inifile"
 gem "lockfile"
+gem "RbST"
 
 gem "coderay", "~> 0.9.7"
 gem "i18n", "~> 0.4.2"
