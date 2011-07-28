@@ -25,20 +25,29 @@ GEM
       crack (>= 0.1.6)
     gyoku (0.4.4)
       builder (>= 2.1.2)
+    hashie (0.4.0)
+    httparty (0.6.1)
+      crack (= 0.1.8)
     httpi (0.9.5)
       rack
     i18n (0.4.2)
     inifile (0.4.1)
+    koala (1.1.0)
+      multi_json (~> 1.0)
+      multipart-post (~> 1.0)
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
     lockfile (1.4.3)
     mocha (0.9.12)
+    multi_json (1.0.3)
+    multipart-post (1.1.3)
     mysql (2.8.1)
     mysql2 (0.2.11)
     nokogiri (1.5.0)
     nori (1.0.2)
+    oauth (0.4.5)
     pg (0.9.0)
     rack (1.0.1)
     rails (2.3.5)
@@ -80,9 +89,15 @@ GEM
     shoulda (2.10.3)
     sqlite3 (1.3.4)
     sqlite3-ruby (1.2.5)
+    twitter (0.9.10)
+      hashie (~> 0.4.0)
+      httparty (~> 0.6.1)
+      oauth (~> 0.4.3)
+      yajl-ruby (~> 0.7.7)
     wasabi (2.0.0)
       nokogiri (>= 1.4.0)
     will_paginate (2.3.15)
+    yajl-ruby (0.7.9)
 
 PLATFORMS
   ruby
@@ -98,10 +113,12 @@ DEPENDENCIES
   i18n (~> 0.4.2)
   inifile
   jruby-openssl
+  koala
   lockfile
   mocha
   mysql
   mysql2 (~> 0.2.7)
+  oauth
   pg (~> 0.9.0)
   rack (= 1.0.1)
   rails (= 2.3.5)
@@ -115,4 +132,5 @@ DEPENDENCIES
   shoulda (~> 2.10.3)
   sqlite3
   sqlite3-ruby (< 1.3)
+  twitter
   will_paginate (= 2.3.15)
