@@ -2,6 +2,17 @@ source :rubygems
 
 gem "rails", "2.3.12"
 
+gem "rack", ">= 1.1.0"
+gem "garb", "0.9.1"
+gem "savon", "0.9.6"
+gem "will_paginate", "2.3.15"
+gem "inifile"
+gem "lockfile"
+gem "RbST"
+gem "koala"
+gem "oauth"
+gem "twitter", "~> 1.6.2"
+
 gem "coderay", "~> 0.9.7"
 gem "i18n", "~> 0.4.2"
 gem "rubytree", "~> 0.5.2", :require => 'tree'
