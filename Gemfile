@@ -11,7 +11,7 @@ gem "lockfile"
 gem "RbST"
 gem "koala"
 gem "oauth"
-gem "twitter", "~> 1.6.2"
+gem "twitter", "1.6.0"
 
 gem "coderay", "~> 0.9.7"
 gem "i18n", "~> 0.4.2"
