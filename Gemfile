@@ -13,6 +13,7 @@ gem "koala"
 gem "oauth"
 gem "twitter", "1.6.0"
 gem "httparty", "0.7.8"
+gem "fastercsv", "1.5.4"
 
 gem "coderay", "~> 0.9.7"
 gem "i18n", "~> 0.4.2"
