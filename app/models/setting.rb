@@ -13,6 +13,7 @@
 #++
 
 class Setting < ActiveRecord::Base
+  attr_accessible :name, :value
 
   DATE_FORMATS = [
 	'%Y-%m-%d',
@@ -72,7 +73,7 @@ class Setting < ActiveRecord::Base
                   TIS-620)
 
   cattr_accessor :available_settings
-  @@available_settings = YAML::load(File.open("#{RAILS_ROOT}/config/settings.yml"))
+  @@available_settings = YAML::load(File.open(Rails.root.join("config", "settings.yml")))
   Redmine::Plugin.all.each do |plugin|
     next unless plugin.settings
     @@available_settings["plugin_#{plugin.id}"] = {'default' => plugin.settings[:default], 'serialized' => true}
@@ -97,17 +98,13 @@ class Setting < ActiveRecord::Base
 
   # Returns the value of the setting named name
   def self.[](name)
-    if use_caching?
-      Marshal.load(Rails.cache.fetch(self.cache_key(name)) {Marshal.dump(find_or_default(name).value)})
-    else
-      find_or_default(name).value
-    end
+    Marshal.load(Rails.cache.fetch("chiliproject/setting/#{name}") {Marshal.dump(find_or_default(name).value)})
   end
 
   def self.[]=(name, v)
     setting = find_or_default(name)
     setting.value = (v ? v : "")
-    Rails.cache.delete self.cache_key(name)
+    Rails.cache.delete "chiliproject/setting/#{name}"
     setting.save
     setting.value
   end
@@ -141,42 +138,23 @@ class Setting < ActiveRecord::Base
     Object.const_defined?(:OpenID) && self[:openid].to_i > 0
   end
 
-  # Deprecation Warning: This method is no longer available. There is no
-  # replacement.
+  # Checks if settings have changed since the values were read
+  # and clears the cache hash if it's the case
+  # Called once per request
   def self.check_cache
-    # DEPRECATED SINCE 3.0.0beta2
-    ActiveSupport::Deprecation.warn "The Setting.check_cache method is " +
-      "deprecated and will be removed in the future. There should be no " +
-      "replacement for this functionality needed."
+    settings_updated_on = Setting.maximum(:updated_on)
+    cache_cleared_on = Rails.cache.read('chiliproject/setting-cleared_on')
+    cache_cleared_on = cache_cleared_on ? Marshal.load(cache_cleared_on) : Time.now
+    if settings_updated_on && cache_cleared_on <= settings_updated_on
+      clear_cache
+    end
   end
 
   # Clears all of the Setting caches
   def self.clear_cache
-    # DEPRECATED SINCE 3.0.0beta2
-    ActiveSupport::Deprecation.warn "The Setting.clear_cache method is " +
-      "deprecated and will be removed in the future. There should be no " +
-      "replacement for this functionality needed. To sweep the whole " +
-      "cache Rails.cache.clear may be used. To invalidate the Settings " +
-      "only, you may use Setting.first.try(:touch)"
-  end
-
-  # Temporarily deactivate settings caching in the block scope
-  def self.uncached
-    cache_setting = self.use_caching
-    self.use_caching = false
-    yield
-  ensure
-    self.use_caching = cache_setting
-  end
-
-  # Check if Setting caching should be performed
-  def self.use_caching?
-    !Thread.current['chiliproject/settings/do_not_use_caching']
-  end
-
-  # Dis-/En-able Setting caching. This is mainly intended to be used in tests
-  def self.use_caching=(new_value)
-    Thread.current['chiliproject/settings/do_not_use_caching'] = !new_value
+    Rails.cache.delete_matched( /^chiliproject\/setting\/.+$/ )
+    Rails.cache.write('chiliproject/setting-cleared_on', Marshal.dump(Time.now))
+    logger.info 'Settings cache cleared.' if logger
   end
 
 private
@@ -187,9 +165,5 @@ private
     raise "There's no setting named #{name}" unless @@available_settings.has_key?(name)
     setting = find_by_name(name)
     setting ||= new(:name => name, :value => @@available_settings[name]['default']) if @@available_settings.has_key? name
-  end
-
-  def self.cache_key(name)
-    "chiliproject/setting/#{Setting.maximum(:updated_on).to_i}/#{name}"
   end
 end

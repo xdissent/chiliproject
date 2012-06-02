@@ -43,11 +43,12 @@ class ProjectsController < ApplicationController
       format.html {
         @projects = Project.visible.find(:all, :order => 'lft')
       }
-      format.api  {
-        @offset, @limit = api_offset_and_limit
-        @project_count = Project.visible.count
-        @projects = Project.visible.all(:offset => @offset, :limit => @limit, :order => 'lft')
-      }
+     # TODO replace by rabl
+     # format.api  {
+     #   @offset, @limit = api_offset_and_limit
+     #   @project_count = Project.visible.count
+     #   @projects = Project.visible.all(:offset => @offset, :limit => @limit, :order => 'lft')
+     # }
       format.atom {
         projects = Project.visible.find(:all, :order => 'created_on DESC',
                                               :limit => Setting.feeds_limit.to_i)
@@ -63,7 +64,6 @@ class ProjectsController < ApplicationController
     @project.safe_attributes = params[:project]
   end
 
-  verify :method => :post, :only => :create, :render => {:nothing => true, :status => :method_not_allowed }
   def create
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @trackers = Tracker.all
@@ -157,8 +157,6 @@ class ProjectsController < ApplicationController
   def edit
   end
 
-  # TODO: convert to PUT only
-  verify :method => [:post, :put], :only => :update, :render => {:nothing => true, :status => :method_not_allowed }
   def update
     @project.safe_attributes = params[:project]
     if validate_parent_id && @project.save
@@ -181,7 +179,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  verify :method => :post, :only => :modules, :render => {:nothing => true, :status => :method_not_allowed }
   def modules
     @project.enabled_module_names = params[:enabled_module_names]
     flash[:notice] = l(:notice_successful_update)

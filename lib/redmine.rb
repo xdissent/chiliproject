@@ -26,12 +26,6 @@ require 'redmine/notifiable'
 require 'redmine/wiki_formatting'
 require 'redmine/scm/base'
 
-begin
-  require_library_or_gem 'RMagick' unless Object.const_defined?(:Magick)
-rescue LoadError
-  # RMagick is not available
-end
-
 if RUBY_VERSION < '1.9'
   require 'faster_csv'
 else
@@ -411,4 +405,5 @@ Redmine::WikiFormatting.map do |format|
   format.register :textile, Redmine::WikiFormatting::Textile::Formatter, Redmine::WikiFormatting::Textile::Helper
 end
 
-ActionView::Template.register_template_handler :rsb, Redmine::Views::ApiTemplateHandler
+## TODO remove
+#ActionView::Template.register_template_handler :rsb, Redmine::Views::ApiTemplateHandler

@@ -1,4 +1,3 @@
-#-- encoding: UTF-8
 # This file is part of the acts_as_journalized plugin for the redMine
 # project management software
 #

@@ -16,10 +16,7 @@ module Redmine
             has_many :watchers, :as => :watchable, :dependent => :delete_all
             has_many :watcher_users, :through => :watchers, :source => :user, :validate => false
             
-            named_scope :watched_by, lambda { |user_id|
-              { :include => :watchers,
-                :conditions => ["#{Watcher.table_name}.user_id = ?", user_id] }
-            }
+            scope :watched_by, lambda {|user_id| joins(:watchers).where(:watchers => {:user_id => user_id})}
             attr_protected :watcher_ids, :watcher_user_ids
           end
         end
@@ -42,7 +39,7 @@ module Redmine
         
         # Removes user from the watchers list
         def remove_watcher(user)
-          return nil unless user && user.is_a?(Principal)
+          return nil unless user && user.is_a?(User)
           Watcher.delete_all "watchable_type = '#{self.class}' AND watchable_id = #{self.id} AND user_id = #{user.id}"
         end
         
@@ -64,14 +61,7 @@ module Redmine
           if respond_to?(:visible?)
             notified.reject! {|user| !visible?(user)}
           end
-
-          notified.collect {|w|
-            if w.respond_to?(:mail) && w.mail.present? # Single mail
-              w.mail
-            elsif w.respond_to?(:mails) && w.mails.present? # Multiple mail
-              w.mails
-            end
-          }.flatten.compact
+          notified.collect(&:mail).compact
         end
 
         module ClassMethods; end

@@ -1,20 +1,41 @@
-# -*- coding: utf-8 -*-
-source :rubygems
+source 'https://rubygems.org'
 
-gem "rails", "2.3.14"
+gem 'rails', '3.2.3'
 
+# Bundle edge Rails instead:
+# gem 'rails', :git => 'git://github.com/rails/rails.git'
+
+gem 'sqlite3'
+gem 'therubyracer'
+
+
+# chiliproject
 gem "coderay", "~> 1.0.0"
-gem "i18n", "~> 0.4.2"
 gem "rubytree", "~> 0.5.2", :require => 'tree'
 gem "rdoc", ">= 2.4.2"
 gem "liquid", "~> 2.3.0"
 gem "acts-as-taggable-on", "= 2.1.0"
-# Needed only on RUBY_VERSION = 1.8, ruby 1.9+ compatible interpreters should bring their csv
-gem "fastercsv", "~> 1.5.0", :platforms => [:ruby_18, :jruby, :mingw_18]
-gem "tzinfo", "~> 0.3.31" # Fixes #903. Not required for Rails >= 3.2
+gem 'awesome_nested_set'
+gem 'open_id_authentication'
+
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  # gem 'therubyracer', :platform => :ruby
+
+  gem 'uglifier', '>= 1.0.3'
+end
+
 
 group :test do
   gem 'shoulda', '~> 2.10.3'
+  # Shoulda doesn't work nice on 1.9.3 and seems to need test-unit explicitely…
+  gem 'test-unit', :platforms => [:mri_19]
   gem 'edavis10-object_daddy', :require => 'object_daddy'
   gem 'mocha'
   gem 'capybara'
@@ -30,27 +51,7 @@ end
 
 group :rmagick do
   gem "rmagick", ">= 1.15.17"
-  # Older distributions might not have a sufficiently new ImageMagick version
-  # for the current rmagick release (current rmagick is rmagick 2, which
-  # requires ImageMagick 6.4.9 or later). If this is the case for you, comment
-  # the line above this comment block and uncomment the one underneath it to
-  # get an rmagick version known to work on older distributions.
-  #
-  # The following distributions are known to *not* ship with a usable
-  # ImageMagick version. There might be additional ones.
-  #   * Ubuntu 9.10 and older
-  #   * Debian Lenny 5.0 and older
-  #   * CentOS 5 and older
-  #   * RedHat 5 and older
-  #
-  #gem "rmagick", "< 2.0.0"
 end
-
-# Use the commented pure ruby gems, if you have not the needed prerequisites on
-# board to compile the native ones.  Note, that their use is discouraged, since
-# their integration is propbably not that well tested and their are slower in
-# orders of magnitude compared to their native counterparts. You have been
-# warned.
 
 platforms :mri, :mingw do
   group :mysql2 do
@@ -59,14 +60,12 @@ platforms :mri, :mingw do
 
   group :postgres do
     gem "pg"
-    #   gem "postgres-pr"
   end
 end
 
 platforms :mri_18, :mingw_18 do
   group :mysql do
     gem "mysql"
-    #   gem "ruby-mysql"
   end
 
   group :sqlite do
@@ -110,3 +109,5 @@ end
     instance_eval File.read(file)
   end
 end
+
+gem 'jquery-rails'

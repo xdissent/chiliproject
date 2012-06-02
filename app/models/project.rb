@@ -24,11 +24,13 @@ class Project < ActiveRecord::Base
 
   # Specific overidden Activities
   has_many :time_entry_activities
-  has_many :members, :include => [:user, :roles], :conditions => "#{User.table_name}.type='User' AND #{User.table_name}.status=#{User::STATUS_ACTIVE}"
+  # TODO dziwne zaleznosci
+  #has_many :members, :include => [:user, :roles], :conditions => "#{User.table_name}.type='User' AND #{User.table_name}.status=#{User::STATUS_ACTIVE}"
   has_many :memberships, :class_name => 'Member'
-  has_many :member_principals, :class_name => 'Member',
-                               :include => :principal,
-                               :conditions => "#{Principal.table_name}.type='Group' OR (#{Principal.table_name}.type='User' AND #{Principal.table_name}.status=#{User::STATUS_ACTIVE})"
+  # TODO dziwne zaleznosci
+  #has_many :member_principals, :class_name => 'Member',
+  #                             :include => :principal,
+  #                             :conditions => "#{Principal.table_name}.type='Group' OR (#{Principal.table_name}.type='User' AND #{Principal.table_name}.status=#{User::STATUS_ACTIVE})"
   has_many :users, :through => :members
   has_many :principals, :through => :member_principals, :source => :principal
 
@@ -78,16 +80,10 @@ class Project < ActiveRecord::Base
 
   before_destroy :delete_all_members
 
-  named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
-  named_scope :active, { :conditions => "#{Project.table_name}.status = #{STATUS_ACTIVE}"}
-  named_scope :all_public, { :conditions => { :is_public => true } }
-  named_scope :visible, lambda { { :conditions => Project.visible_by(User.current) } }
-  named_scope :like, lambda {|q|
-    s = "%#{q.to_s.strip.downcase}%"
-    {
-      :conditions => ["LOWER(name) LIKE ?", s]
-    }
-  }
+  scope :has_module, lambda {|mod| where("#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s)}
+  scope :active, where(:status => STATUS_ACTIVE)
+  scope :all_public, where(:is_public => true)
+  scope :visible, lambda {where(Project.visible_by(User.current))}
 
   def to_liquid
     ProjectDrop.new(self)

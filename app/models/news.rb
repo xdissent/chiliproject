@@ -22,17 +22,13 @@ class News < ActiveRecord::Base
   validates_length_of :title, :maximum => 60
   validates_length_of :summary, :maximum => 255
 
-  acts_as_journalized :event_url => Proc.new {|o| {:controller => 'news', :action => 'show', :id => o.journaled_id} },
-    :event_description => :description
+  acts_as_journalized :event_url => Proc.new {|o| {:controller => 'news', :action => 'show', :id => o.journaled_id} }
   acts_as_searchable :columns => ["#{table_name}.title", "#{table_name}.summary", "#{table_name}.description"], :include => :project
   acts_as_watchable
 
   after_create :add_author_as_watcher
 
-  named_scope :visible, lambda {|*args| {
-    :include => :project,
-    :conditions => Project.allowed_to_condition(args.first || User.current, :view_news)
-  }}
+  scope :visible, lambda {|*args| joins(:project).where(Project.allowed_to_condition(args.first || User.current, :view_news))}
 
   safe_attributes 'title', 'summary', 'description'
 
@@ -47,7 +43,7 @@ class News < ActiveRecord::Base
 
   # returns latest news for projects visible by user
   def self.latest(user = User.current, count = 5)
-    find(:all, :limit => count, :conditions => Project.allowed_to_condition(user, :view_news), :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+    joins([:author, :project]).where(Project.allowed_to_condition(user, :view_news)).order("#{News.table_name}.created_on DESC").limit(count)
   end
 
   private

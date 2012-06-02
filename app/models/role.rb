@@ -17,11 +17,8 @@ class Role < ActiveRecord::Base
   BUILTIN_NON_MEMBER = 1
   BUILTIN_ANONYMOUS  = 2
 
-  named_scope :givable, { :conditions => "builtin = 0", :order => 'position' }
-  named_scope :builtin, lambda { |*args|
-    compare = 'not' if args.first == true
-    { :conditions => "#{compare} builtin = 0" }
-  }
+  scope :givable, where(:builtin => false).order(:position)
+  scope :builtin, lambda {|*args| where(:builtin => (args.first || true))}
 
   before_destroy :check_deletable
   has_many :workflows, :dependent => :delete_all do

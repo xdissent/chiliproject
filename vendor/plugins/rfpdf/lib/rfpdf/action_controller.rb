@@ -32,7 +32,7 @@ module RFPDF
 
       def compute_rfpdf_options
         @rfpdf_options ||= DEFAULT_RFPDF_OPTIONS.dup
-        @rfpdf_options.merge!(self.class.read_inheritable_attribute(:rfpdf) || {}) {|k,o,n| o}
+        @rfpdf_options.merge!(self.class.rfpdf || {}) {|k,o,n| o}
         @rfpdf_options
       end
   end

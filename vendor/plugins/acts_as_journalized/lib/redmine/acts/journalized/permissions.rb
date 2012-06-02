@@ -1,4 +1,3 @@
-#-- encoding: UTF-8
 # This file is part of the acts_as_journalized plugin for the redMine
 # project management software
 #
@@ -22,7 +21,7 @@ module Redmine::Acts::Journalized
   module Permissions
     # Default implementation of journal editing permission
     # Is overridden if defined in the journalized model directly
-    def journal_editable_by?(journal, user)
+    def journal_editable_by?(user)
       return true if user.admin?
       if respond_to? :editable_by?
         editable_by? user
