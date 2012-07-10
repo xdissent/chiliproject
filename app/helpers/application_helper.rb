@@ -14,7 +14,6 @@
 
 require 'forwardable'
 require 'cgi'
-require 'gravatar'
 
 module ApplicationHelper
   include Redmine::I18n
