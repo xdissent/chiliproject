@@ -68,7 +68,7 @@ class Issue < ActiveRecord::Base
 
   scope :visible, lambda {|*args| joins(:project).where(Issue.visible_condition(args.first || User.current))}
 
-  scope :open, joins(:status).where(:status => {:is_closed => false})
+  scope :open, joins(:status).where("#{IssueStatus.table_name}.is_closed" => false)
 
   scope :recently_updated, order("updated_on DESC")
   scope :with_limit, lambda { |lim| limit(lim) }

@@ -17,6 +17,8 @@ class Token < ActiveRecord::Base
   validates_uniqueness_of :value
 
   before_create :delete_previous_tokens
+  
+  attr_accessible :user, :action
 
   @@validity_time = 1.day
 

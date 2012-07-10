@@ -55,9 +55,6 @@ group :rmagick do
   gem "rmagick", ">= 1.15.17"
 end
 
-<<<<<<< HEAD
-platforms :mri, :mingw do
-=======
 # Use the commented pure ruby gems, if you have not the needed prerequisites on
 # board to compile the native ones.  Note, that their use is discouraged, since
 # their integration is propbably not that well tested and their are slower in
@@ -65,7 +62,6 @@ platforms :mri, :mingw do
 # warned.
 
 platforms :mri, :mingw, :rbx do
->>>>>>> upstream/master
   group :mysql2 do
     gem "mysql2", "~> 0.2.7"
   end

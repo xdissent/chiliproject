@@ -1128,4 +1128,13 @@ module ApplicationHelper
     end
   end
 
+  def error_messages_for(obj)
+    if obj.errors.any?
+      s = ''
+      obj.errors.full_messages.each do |msg|
+        s << render(:partial => "common/flash_form_error_template", :locals => { :msg => msg})
+      end
+      s.html_safe
+    end
+  end
 end
