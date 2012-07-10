@@ -20,7 +20,24 @@ ChiliProject::Application.routes.draw do
   match 'account/lost_password', :to => 'account#lost_password', :via => [:get, :post]
   match 'account/register' => 'account#register'
 
+  match 'my/account', :controller => 'my', :action => 'account', :via => [:get, :post]
+  match 'my/account/destroy', :controller => 'my', :action => 'destroy', :via => [:get, :post]
+  match 'my/page', :controller => 'my', :action => 'page', :via => :get
+  match 'my', :controller => 'my', :action => 'index', :via => :get 
+  match 'my/reset_rss_key', :controller => 'my', :action => 'reset_rss_key', :via => :post
+  match 'my/reset_api_key', :controller => 'my', :action => 'reset_api_key', :via => :post
+  match 'my/password', :controller => 'my', :action => 'password', :via => [:get, :post]
+  match 'my/page_layout', :controller => 'my', :action => 'page_layout', :via => :get
+  match 'my/add_block', :controller => 'my', :action => 'add_block', :via => :post
+  match 'my/remove_block', :controller => 'my', :action => 'remove_block', :via => :post
+  match 'my/order_blocks', :controller => 'my', :action => 'order_blocks', :via => :post
+
   match 'search/index' => 'search#index'
+
+
+
+  #TODO clear it
+  match 'ldap_auth_sources' => 'ldap_auth_sources#index'
 
   match 'roles/workflow/:id/:role_id/:tracker_id' => 'roles#workflow'
   match 'help/:ctrl/:page' => 'help#index'
@@ -88,6 +105,24 @@ ChiliProject::Application.routes.draw do
   match 'issues/bulk_edit' => 'issues#bulk_update', :via => :post, :as => 'bulk_update_issue'
   match 'issues/:id/quoted' => 'journals#new', :id => /\d+/, :via => :post, :as => 'quoted_issue'
   match 'issues/:id/destroy' => 'issues#destroy', :via => :post # legacy
+
+
+  match 'admin', :controller => 'admin', :action => 'index', :via => :get
+  match 'admin/projects', :controller => 'admin', :action => 'projects', :via => :get
+  match 'admin/plugins', :controller => 'admin', :action => 'plugins', :via => :get
+  match 'admin/info', :controller => 'admin', :action => 'info', :via => :get
+  match 'admin/test_email', :controller => 'admin', :action => 'test_email', :via => :get
+  match 'admin/default_configuration', :controller => 'admin', :action => 'default_configuration', :via => :post
+
+  match 'workflows', :controller => 'workflows', :action => 'index', :via => :get
+  match 'workflows/edit', :controller => 'workflows', :action => 'edit', :via => [:get, :post]
+  match 'workflows/copy', :controller => 'workflows', :action => 'copy', :via => [:get, :post]
+  match 'settings', :controller => 'settings', :action => 'index', :via => :get
+  match 'settings/edit', :controller => 'settings', :action => 'edit', :via => [:get, :post]
+  match 'settings/plugin/:id', :controller => 'settings', :action => 'plugin', :via => [:get, :post]
+
+  resources :custom_fields, :except => :show
+
 
   scope 'issues' do
     resource :gantt, :only => [:show, :update]
