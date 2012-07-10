@@ -32,15 +32,21 @@ class ApplicationController < ActionController::Base
     cookies.delete(:autologin)
   end
 
-  # Remove broken cookie after upgrade from 0.8.x (#4292)
-  # See https://rails.lighthouseapp.com/projects/8994/tickets/3360
-  # TODO: remove it when Rails is fixed
-  before_filter :delete_broken_cookies
-  def delete_broken_cookies
-    if cookies['_chiliproject_session'] && cookies['_chiliproject_session'] !~ /--/
-      cookies.delete '_chiliproject_session'
-      redirect_to home_path
-      return false
+  # FIXME: Remove this when all of Rack and Rails have learned how to
+  # properly use encodings
+  before_filter :params_filter
+  def params_filter
+    self.utf8nize!(params) if RUBY_VERSION >= '1.9'
+  end
+  def utf8nize!(obj)
+    if obj.is_a? String
+      obj.respond_to?(:force_encoding) ? obj.force_encoding("UTF-8") : obj
+    elsif obj.is_a? Hash
+      obj.each {|k, v| obj[k] = self.utf8nize!(v)}
+    elsif obj.is_a? Array
+      obj.each {|v| self.utf8nize!(v)}
+    else
+      obj
     end
   end
 

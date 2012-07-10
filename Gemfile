@@ -15,8 +15,10 @@ gem "rubytree", "~> 0.5.2", :require => 'tree'
 gem "rdoc", ">= 2.4.2"
 gem "liquid", "~> 2.3.0"
 gem "acts-as-taggable-on", "= 2.1.0"
+
 gem 'awesome_nested_set'
 gem 'open_id_authentication'
+gem 'gravatarify', '~> 3.0.0'
 
 
 # Gems used only for assets and not required
@@ -53,7 +55,17 @@ group :rmagick do
   gem "rmagick", ">= 1.15.17"
 end
 
+<<<<<<< HEAD
 platforms :mri, :mingw do
+=======
+# Use the commented pure ruby gems, if you have not the needed prerequisites on
+# board to compile the native ones.  Note, that their use is discouraged, since
+# their integration is propbably not that well tested and their are slower in
+# orders of magnitude compared to their native counterparts. You have been
+# warned.
+
+platforms :mri, :mingw, :rbx do
+>>>>>>> upstream/master
   group :mysql2 do
     gem "mysql2", "~> 0.2.7"
   end
@@ -73,7 +85,7 @@ platforms :mri_18, :mingw_18 do
   end
 end
 
-platforms :mri_19, :mingw_19 do
+platforms :mri_19, :mingw_19, :rbx do
   group :sqlite do
     gem "sqlite3"
   end
