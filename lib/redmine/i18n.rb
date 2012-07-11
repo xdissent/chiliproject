@@ -12,6 +12,9 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
+# TODO 
+#
+# Replace by default R18n ?
 module Redmine
   module I18n
     def self.included(base)

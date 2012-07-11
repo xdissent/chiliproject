@@ -204,7 +204,7 @@ html > body #content {
 }
 
 input#openid_url {
-  background: url(../images/openid-bg.gif) no-repeat;
+  background: url(openid-bg.gif) no-repeat;
   background-color: #fff;
   background-position: 0 50%;
   padding-left: 18px;
@@ -295,7 +295,7 @@ tr.project td.name a {
 }
 
 tr.project.idnt td.name span {
-  background: url(../images/bullet_arrow_right.png) no-repeat 0 50%;
+  background: url(bullet_arrow_right.png) no-repeat 0 50%;
   padding-left: 16px;
 }
 
@@ -356,7 +356,7 @@ tr.issue td.done_ratio table.progress {
 }
 
 #content tr.issue.idnt td.subject a {
-  background: url(../images/bullet_arrow_right.png) no-repeat 0 50%;
+  background: url(bullet_arrow_right.png) no-repeat 0 50%;
   padding-left: 16px;
 }
 
@@ -427,14 +427,14 @@ tr.entry.file td.filename a {
 }
 
 tr span.expander {
-  background-image: url(../images/bullet_toggle_plus.png);
+  background-image: url(bullet_toggle_plus.png);
   padding-left: 8px;
   margin-left: 0;
   cursor: pointer;
 }
 
 tr.open span.expander {
-  background-image: url(../images/bullet_toggle_minus.png);
+  background-image: url(bullet_toggle_minus.png);
 }
 
 tr.changeset td.author {
@@ -483,11 +483,11 @@ tr.message td.last_message {
 }
 
 tr.message.locked td.subject {
-  background: url(../images/locked.png) no-repeat 0 1px;
+  background: url(locked.png) no-repeat 0 1px;
 }
 
 tr.message.sticky td.subject {
-  background: url(../images/bullet_go.png) no-repeat 0 1px;
+  background: url(bullet_go.png) no-repeat 0 1px;
   font-weight: bold;
 }
 
@@ -501,7 +501,7 @@ tr.version td.name {
 }
 
 tr.version.shared td.name {
-  background: url(../images/link.png) no-repeat 0% 70%;
+  background: url(link.png) no-repeat 0% 70%;
 }
 
 tr.version td.date,
@@ -633,11 +633,11 @@ a.sort {
 }
 
 a.sort.asc {
-  background-image: url(../images/sort_asc.png);
+  background-image: url(sort_asc.png);
 }
 
 a.sort.desc {
-  background-image: url(../images/sort_desc.png);
+  background-image: url(sort_desc.png);
 }
 
 table.attributes {
@@ -655,7 +655,7 @@ table.attributes td {
 
 table.boards a.board,
 h3.comments {
-  background: url(../images/comment.png) no-repeat 0% 50%;
+  background: url(comment.png) no-repeat 0% 50%;
   padding-left: 20px;
 }
 
@@ -674,27 +674,27 @@ td.center {
 }
 
 h3.version {
-  background: url(../images/package.png) no-repeat 0% 50%;
+  background: url(package.png) no-repeat 0% 50%;
   padding-left: 20px;
 }
 
 div.issues h3 {
-  background: url(../images/ticket.png) no-repeat 0% 50%;
+  background: url(ticket.png) no-repeat 0% 50%;
   padding-left: 20px;
 }
 
 div.members h3 {
-  background: url(../images/group.png) no-repeat 0% 50%;
+  background: url(group.png) no-repeat 0% 50%;
   padding-left: 20px;
 }
 
 div.news h3 {
-  background: url(../images/news.png) no-repeat 0% 50%;
+  background: url(news.png) no-repeat 0% 50%;
   padding-left: 20px;
 }
 
 div.projects h3 {
-  background: url(../images/projects.png) no-repeat 0% 50%;
+  background: url(projects.png) no-repeat 0% 50%;
   padding-left: 20px;
 }
 
@@ -935,7 +935,7 @@ fieldset.collapsible.header_collapsible > * {
 }
 
 fieldset.collapsible.header_collapsible legend {
-  background: #E6E6E6 url(../images/double_arrow_toggle_up.png) no-repeat 99% 50%;
+  background: #E6E6E6 url(double_arrow_toggle_up.png) no-repeat 99% 50%;
   cursor: pointer;
   padding-left: 0px;
   width: 100%;
@@ -961,7 +961,7 @@ fieldset.collapsible.header_collapsible legend:hover {
 }
 
 fieldset.collapsible.collapsed.header_collapsible legend {
-  background-image: url(../images/double_arrow_toggle_down.png);
+  background-image: url(double_arrow_toggle_down.png);
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -982,12 +982,12 @@ fieldset.collapsible.collapsed.borders {
 
 fieldset.collapsible legend {
   padding-left: 16px;
-  background: url(../images/arrow_expanded.png) no-repeat 0% 40%;
+  background: url(arrow_expanded.png) no-repeat 0% 40%;
   cursor: pointer;
 }
 
 fieldset.collapsible.collapsed legend {
-  background-image: url(../images/arrow_collapsed.png);
+  background-image: url(arrow_collapsed.png);
 }
 
 fieldset#date-range p {
@@ -1108,59 +1108,59 @@ div#search-results-counts li {
 }
 
 dt.issue {
-  background-image: url(../images/ticket.png);
+  background-image: url(ticket.png);
 }
 
 dt.issue-edit {
-  background-image: url(../images/ticket_edit.png);
+  background-image: url(ticket_edit.png);
 }
 
 dt.issue-closed {
-  background-image: url(../images/ticket_checked.png);
+  background-image: url(ticket_checked.png);
 }
 
 dt.issue-note {
-  background-image: url(../images/ticket_note.png);
+  background-image: url(ticket_note.png);
 }
 
 dt.changeset {
-  background-image: url(../images/changeset.png);
+  background-image: url(changeset.png);
 }
 
 dt.news {
-  background-image: url(../images/news.png);
+  background-image: url(news.png);
 }
 
 dt.message {
-  background-image: url(../images/message.png);
+  background-image: url(message.png);
 }
 
 dt.reply {
-  background-image: url(../images/comments.png);
+  background-image: url(comments.png);
 }
 
 dt.wiki-page {
-  background-image: url(../images/wiki_edit.png);
+  background-image: url(wiki_edit.png);
 }
 
 dt.attachment {
-  background-image: url(../images/attachment.png);
+  background-image: url(attachment.png);
 }
 
 dt.document {
-  background-image: url(../images/document.png);
+  background-image: url(document.png);
 }
 
 dt.project {
-  background-image: url(../images/projects.png);
+  background-image: url(projects.png);
 }
 
 dt.time-entry {
-  background-image: url(../images/time.png);
+  background-image: url(time.png);
 }
 
 #search-results dt.issue.closed {
-  background-image: url(../images/ticket_checked.png);
+  background-image: url(ticket_checked.png);
 }
 
 .search-pagination {
@@ -1285,7 +1285,7 @@ ul.projects div.root a.project {
 
 .my-project {
   padding-left: 18px;
-  background: url(../images/fav.png) no-repeat 0 50%;
+  background: url(fav.png) no-repeat 0 50%;
 }
 
 #tracker_project_ids ul {
@@ -1409,7 +1409,7 @@ input#time_entry_comments {
 
 #preview fieldset {
   margin-top: 1em;
-  background: url(../images/draft.png);
+  background: url(draft.png);
 }
 
 .tabular.settings p {
@@ -1476,7 +1476,7 @@ p.other-formats {
 }
 
 a.atom {
-  background: url(../images/feed.png) no-repeat 1px 50%;
+  background: url(feed.png) no-repeat 1px 50%;
   padding: 2px 0px 3px 16px;
 }
 
@@ -1521,7 +1521,7 @@ div#tab-content-memberships fieldset div {
 
 table.members td.group {
   padding-left: 20px;
-  background: url(../images/group.png) no-repeat 0% 50%;
+  background: url(group.png) no-repeat 0% 50%;
 }
 
 input#principal_search,
@@ -1550,21 +1550,21 @@ div.flash {
 
 div.flash.error,
 #errorExplanation {
-  background: url(../images/exclamation.png) 8px 50% no-repeat;
+  background: url(exclamation.png) 8px 50% no-repeat;
   background-color: #ffe3e3;
   border-color: #dd0000;
   color: #880000;
 }
 
 div.flash.notice {
-  background: url(../images/true.png) 8px 5px no-repeat;
+  background: url(true.png) 8px 5px no-repeat;
   background-color: #dfffdf;
   border-color: #9fcf9f;
   color: #005f00;
 }
 
 div.flash.warning {
-  background: url(../images/warning.png) 8px 5px no-repeat;
+  background: url(warning.png) 8px 5px no-repeat;
   background-color: #FFEBC1;
   border-color: #FDBF3B;
   color: #A6750C;
@@ -1612,7 +1612,7 @@ html > body #ajax-indicator {
 #ajax-indicator span {
   background-position: 0% 40%;
   background-repeat: no-repeat;
-  background-image: url(../images/loading.gif);
+  background-image: url(loading.gif);
   padding-left: 26px;
   vertical-align: bottom;
 }
@@ -1671,19 +1671,19 @@ table.cal td.today p.day-num {
 
 table.cal .starting a,
 p.cal.legend .starting {
-  background: url(../images/bullet_go.png) no-repeat -1px -2px;
+  background: url(bullet_go.png) no-repeat -1px -2px;
   padding-left: 16px;
 }
 
 table.cal .ending a,
 p.cal.legend .ending {
-  background: url(../images/bullet_end.png) no-repeat -1px -2px;
+  background: url(bullet_end.png) no-repeat -1px -2px;
   padding-left: 16px;
 }
 
 table.cal .starting.ending a,
 p.cal.legend .starting.ending {
-  background: url(../images/bullet_diamond.png) no-repeat -1px -2px;
+  background: url(bullet_diamond.png) no-repeat -1px -2px;
   padding-left: 16px;
 }
 
@@ -1837,12 +1837,12 @@ button.tab-right {
 
 button.tab-left {
   right: 20px;
-  background: #eeeeee url(../images/bullet_arrow_left.png) no-repeat 50% 50%;
+  background: #eeeeee url(bullet_arrow_left.png) no-repeat 50% 50%;
 }
 
 button.tab-right {
   right: 0;
-  background: #eeeeee url(../images/bullet_arrow_right.png) no-repeat 50% 50%;
+  background: #eeeeee url(bullet_arrow_right.png) no-repeat 50% 50%;
 }
 
 /***** Auto-complete *****/
@@ -1931,7 +1931,7 @@ div.wiki .external {
   background-position: 0% 60%;
   background-repeat: no-repeat;
   padding-left: 12px;
-  background-image: url(../images/external.png);
+  background-image: url(external.png);
 }
 
 div.wiki pre {
@@ -2001,7 +2001,7 @@ div.wiki ul.toc li li {
 
 div.wiki ul.toc a {
   font-weight: normal;
-  background-image: url(../images/arrow-down.png);
+  background-image: url(arrow-down.png);
   background-repeat: no-repeat;
   background-position: 0% 60%;
   padding-left: 16px;
@@ -2041,7 +2041,7 @@ div.wiki img {
   padding: 0px 10px 0px 10px;
   border: #C4C4C4 solid 1px;
   font-size: 11px;
-  background: #FFFFFF url(../images/background_widgets.png) repeat-x 0 0;
+  background: #FFFFFF url(background_widgets.png) repeat-x 0 0;
   /* Shadow definitions cross browser */
   -moz-box-shadow: 1px 1px 1px #BFBFBF;
   -webkit-box-shadow: 1px 1px 1px #BFBFBF;
@@ -2101,11 +2101,11 @@ a.close-icon {
   height: 12px;
   background-repeat: no-repeat;
   cursor: pointer;
-  background-image: url('../images/close.png');
+  background-image: url('close.png');
 }
 
 a.close-icon:hover {
-  background-image: url('../images/close_hl.png');
+  background-image: url('close_hl.png');
 }
 
 /***** Gantt chart *****/
@@ -2153,17 +2153,17 @@ a.close-icon:hover {
 }
 
 .task_late {
-  background: #f66 url(../images/task_late.png);
+  background: #f66 url(task_late.png);
   border: 1px solid #f66;
 }
 
 .task_done {
-  background: #00c600 url(../images/task_done.png);
+  background: #00c600 url(task_done.png);
   border: 1px solid #00c600;
 }
 
 .task_todo {
-  background: #aaa url(../images/task_todo.png);
+  background: #aaa url(task_todo.png);
   border: 1px solid #aaa;
 }
 
@@ -2180,7 +2180,7 @@ a.close-icon:hover {
 
 .task.parent.marker.starting {
   position: absolute;
-  background: url(../images/task_parent_end.png) no-repeat 0 0;
+  background: url(task_parent_end.png) no-repeat 0 0;
   width: 8px;
   height: 16px;
   margin-left: -4px;
@@ -2190,7 +2190,7 @@ a.close-icon:hover {
 
 .task.parent.marker.ending {
   position: absolute;
-  background: url(../images/task_parent_end.png) no-repeat 0 0;
+  background: url(task_parent_end.png) no-repeat 0 0;
   width: 8px;
   height: 16px;
   margin-left: -4px;
@@ -2199,28 +2199,28 @@ a.close-icon:hover {
 }
 
 .version.task_late {
-  background: #f66 url(../images/milestone_late.png);
+  background: #f66 url(milestone_late.png);
   border: 1px solid #f66;
   height: 2px;
   margin-top: 3px;
 }
 
 .version.task_done {
-  background: #00c600 url(../images/milestone_done.png);
+  background: #00c600 url(milestone_done.png);
   border: 1px solid #00c600;
   height: 2px;
   margin-top: 3px;
 }
 
 .version.task_todo {
-  background: #fff url(../images/milestone_todo.png);
+  background: #fff url(milestone_todo.png);
   border: 1px solid #fff;
   height: 2px;
   margin-top: 3px;
 }
 
 .version.marker {
-  background-image: url(../images/version_marker.png);
+  background-image: url(version_marker.png);
   background-repeat: no-repeat;
   border: 0;
   margin-left: -4px;
@@ -2228,28 +2228,28 @@ a.close-icon:hover {
 }
 
 .project.task_late {
-  background: #f66 url(../images/milestone_late.png);
+  background: #f66 url(milestone_late.png);
   border: 1px solid #f66;
   height: 2px;
   margin-top: 3px;
 }
 
 .project.task_done {
-  background: #00c600 url(../images/milestone_done.png);
+  background: #00c600 url(milestone_done.png);
   border: 1px solid #00c600;
   height: 2px;
   margin-top: 3px;
 }
 
 .project.task_todo {
-  background: #fff url(../images/milestone_todo.png);
+  background: #fff url(milestone_todo.png);
   border: 1px solid #fff;
   height: 2px;
   margin-top: 3px;
 }
 
 .project.marker {
-  background-image: url(../images/project_marker.png);
+  background-image: url(project_marker.png);
   background-repeat: no-repeat;
   border: 0;
   margin-left: -4px;
@@ -2277,199 +2277,199 @@ a.close-icon:hover {
 }
 
 .icon-add {
-  background-image: url(../images/add.png);
+  background-image: url(add.png);
 }
 
 .icon-edit {
-  background-image: url(../images/edit.png);
+  background-image: url(edit.png);
 }
 
 .icon-copy {
-  background-image: url(../images/copy.png);
+  background-image: url(copy.png);
 }
 
 .icon-duplicate {
-  background-image: url(../images/duplicate.png);
+  background-image: url(duplicate.png);
 }
 
 .icon-del {
-  background-image: url(../images/delete.png);
+  background-image: url(delete.png);
 }
 
 .icon-move {
-  background-image: url(../images/move.png);
+  background-image: url(move.png);
 }
 
 .icon-save {
-  background-image: url(../images/save.png);
+  background-image: url(save.png);
 }
 
 .icon-cancel {
-  background-image: url(../images/cancel.png);
+  background-image: url(cancel.png);
 }
 
 .icon-multiple {
-  background-image: url(../images/table_multiple.png);
+  background-image: url(table_multiple.png);
 }
 
 .icon-folder {
-  background-image: url(../images/folder.png);
+  background-image: url(folder.png);
 }
 
 .open .icon-folder {
-  background-image: url(../images/folder_open.png);
+  background-image: url(folder_open.png);
 }
 
 .icon-package {
-  background-image: url(../images/package.png);
+  background-image: url(package.png);
 }
 
 .icon-user {
-  background-image: url(../images/user.png);
+  background-image: url(user.png);
 }
 
 .icon-projects {
-  background-image: url(../images/projects.png);
+  background-image: url(projects.png);
 }
 
 .icon-help {
-  background-image: url(../images/help.png);
+  background-image: url(help.png);
 }
 
 .icon-attachment {
-  background-image: url(../images/attachment.png);
+  background-image: url(attachment.png);
 }
 
 .icon-history {
-  background-image: url(../images/history.png);
+  background-image: url(history.png);
 }
 
 .icon-time {
-  background-image: url(../images/time.png);
+  background-image: url(time.png);
 }
 
 .icon-time-add {
-  background-image: url(../images/time_add.png);
+  background-image: url(time_add.png);
 }
 
 .icon-stats {
-  background-image: url(../images/stats.png);
+  background-image: url(stats.png);
 }
 
 .icon-warning {
-  background-image: url(../images/warning.png);
+  background-image: url(warning.png);
 }
 
 .icon-fav {
-  background-image: url(../images/fav.png);
+  background-image: url(fav.png);
 }
 
 .icon-fav-off {
-  background-image: url(../images/fav_off.png);
+  background-image: url(fav_off.png);
 }
 
 .icon-reload {
-  background-image: url(../images/reload.png);
+  background-image: url(reload.png);
 }
 
 .icon-lock {
-  background-image: url(../images/locked.png);
+  background-image: url(locked.png);
 }
 
 .icon-unlock {
-  background-image: url(../images/unlock.png);
+  background-image: url(unlock.png);
 }
 
 .icon-checked {
-  background-image: url(../images/true.png);
+  background-image: url(true.png);
 }
 
 .icon-details {
-  background-image: url(../images/zoom_in.png);
+  background-image: url(zoom_in.png);
 }
 
 .icon-report {
-  background-image: url(../images/report.png);
+  background-image: url(report.png);
 }
 
 .icon-comment {
-  background-image: url(../images/comment.png);
+  background-image: url(comment.png);
 }
 
 .icon-summary {
-  background-image: url(../images/lightning.png);
+  background-image: url(lightning.png);
 }
 
 .icon-server-authentication {
-  background-image: url(../images/server_key.png);
+  background-image: url(server_key.png);
 }
 
 .icon-issue {
-  background-image: url(../images/ticket.png);
+  background-image: url(ticket.png);
 }
 
 .icon-zoom-in {
-  background-image: url(../images/zoom_in.png);
+  background-image: url(zoom_in.png);
 }
 
 .icon-zoom-out {
-  background-image: url(../images/zoom_out.png);
+  background-image: url(zoom_out.png);
 }
 
 .icon-file {
-  background-image: url(../images/files/default.png);
+  background-image: url(files/default.png);
 }
 
 .icon-file.text-plain {
-  background-image: url(../images/files/text.png);
+  background-image: url(files/text.png);
 }
 
 .icon-file.text-x-c {
-  background-image: url(../images/files/c.png);
+  background-image: url(files/c.png);
 }
 
 .icon-file.text-x-csharp {
-  background-image: url(../images/files/csharp.png);
+  background-image: url(files/csharp.png);
 }
 
 .icon-file.text-x-php {
-  background-image: url(../images/files/php.png);
+  background-image: url(files/php.png);
 }
 
 .icon-file.text-x-ruby {
-  background-image: url(../images/files/ruby.png);
+  background-image: url(files/ruby.png);
 }
 
 .icon-file.text-xml {
-  background-image: url(../images/files/xml.png);
+  background-image: url(files/xml.png);
 }
 
 .icon-file.image-gif {
-  background-image: url(../images/files/image.png);
+  background-image: url(files/image.png);
 }
 
 .icon-file.image-jpeg {
-  background-image: url(../images/files/image.png);
+  background-image: url(files/image.png);
 }
 
 .icon-file.image-png {
-  background-image: url(../images/files/image.png);
+  background-image: url(files/image.png);
 }
 
 .icon-file.image-tiff {
-  background-image: url(../images/files/image.png);
+  background-image: url(files/image.png);
 }
 
 .icon-file.application-pdf {
-  background-image: url(../images/files/pdf.png);
+  background-image: url(files/pdf.png);
 }
 
 .icon-file.application-zip {
-  background-image: url(../images/files/zip.png);
+  background-image: url(files/zip.png);
 }
 
 .icon-file.application-x-gzip {
-  background-image: url(../images/files/zip.png);
+  background-image: url(files/zip.png);
 }
 
 img.gravatar {
@@ -2617,7 +2617,7 @@ a:hover {
 
 #account-nav {
   display: block;
-  background: url(../images/background_top_navigation.png) repeat-x left top;
+  background: url(background_top_navigation.png) repeat-x left top;
 }
 
 #logo {
@@ -2640,7 +2640,7 @@ a:hover {
 }
 
 #header {
-  background: url(../images/background_header.png) repeat-x 20px;
+  background: url(background_header.png) repeat-x 20px;
   height: 43px;
   font: arial,19px,white;
 }
@@ -2685,7 +2685,7 @@ a:hover {
 }
 
 #header li.drop-down > a {
-  background: url(../images/arrow-down-white.png) no-repeat right center;
+  background: url(arrow-down-white.png) no-repeat right center;
   padding-right: 35px;
 }
 
@@ -2694,7 +2694,7 @@ a:hover {
 }
 
 #header li.drop-down > a:hover {
-  background: #700407 url(../images/arrow-down-grey.png) no-repeat right center;
+  background: #700407 url(arrow-down-grey.png) no-repeat right center;
   padding-right: 35px;
 }
 
@@ -2726,23 +2726,23 @@ li a.home {
   text-indent: -999em;
   width: 20px;
   height: 43px;
-  background: url(../images/icon_home.png) no-repeat 50% 50%;
+  background: url(icon_home.png) no-repeat 50% 50%;
 }
 
 li a.help {
   text-indent: -999em;
   width: 20px;
   height: 43px;
-  background: url(../images/icon_help.png) no-repeat 50% 50%;
+  background: url(icon_help.png) no-repeat 50% 50%;
 }
 
 li a.help:hover {
-  background-image: url(../images/icon_help_grey.png);
+  background-image: url(icon_help_grey.png);
 }
 
 #header li.drop-down.open > a {
   color: #6A0406;
-  background: #FFFFFF url(../images/arrow-down-grey.png) no-repeat right center;
+  background: #FFFFFF url(arrow-down-grey.png) no-repeat right center;
   padding-right: 35px;
 }
 
@@ -2758,7 +2758,7 @@ li a.help:hover {
 #header .search_field {
   border: 0px;
   color: white;
-  background: transparent url(../images/background_search.png);
+  background: transparent url(background_search.png);
   background-repeat: repeat-x;
   margin-right: 15px;
   margin-top: 6px;
@@ -2847,7 +2847,7 @@ input: -moz-placeholder {
 #breadcrumb {
   height: 38px;
   line-height: 38px;
-  background: url(../images/background_breadcrumb.png) repeat-x left top;
+  background: url(background_breadcrumb.png) repeat-x left top;
   border-bottom: 1px #d9d9d9;
   color: #777777;
   padding-left: 15px;
@@ -3013,29 +3013,29 @@ div#optional_login_fields {
   position: absolute;
   right: 0px;
   top: 0px;
-  background: url(../images/double_arrow_toggle_down.png) no-repeat 32px 7px;
+  background: url(double_arrow_toggle_down.png) no-repeat 32px 7px;
   width: 50px;
   height: 25px;
 }
 
 #main-menu li .open .toggler {
-  background-image: url(../images/double_arrow_toggle_up.png);
+  background-image: url(double_arrow_toggle_up.png);
 }
 
 #main-menu li .open:hover .toggler {
-  background-image: url(../images/double_arrow_toggle_up_white.png);
+  background-image: url(double_arrow_toggle_up_white.png);
 }
 
 #main-menu li .selected .toggler {
-  background-image: url(../images/double_arrow_toggle_down_white.png);
+  background-image: url(double_arrow_toggle_down_white.png);
 }
 
 #main-menu li .selected.open .toggler {
-  background-image: url(../images/double_arrow_toggle_up_white.png);
+  background-image: url(double_arrow_toggle_up_white.png);
 }
 
 #main-menu li a:hover .toggler {
-  background-image: url(../images/double_arrow_toggle_down_white.png);
+  background-image: url(double_arrow_toggle_down_white.png);
 }
 
 #main-menu li li .toggler {
@@ -3065,7 +3065,7 @@ div#optional_login_fields {
 #main-menu li a.time-details,
 #main-menu li a.billable-time-details,
 #main-menu li a.overhead-time-details {
-  background-image: url(../../../images/time.png);
+  background-image: url(../../time.png);
   background-position: 30px 40%;
   background-repeat: no-repeat;
   padding-left: 50px;
@@ -3149,7 +3149,7 @@ fieldset#filters div.add-filter {
 }
 
 .title-bar .new-issue a {
-  background: url(../images/add.png) no-repeat 6px center;
+  background: url(add.png) no-repeat 6px center;
   padding-left: 26px;
 }
 
@@ -3186,21 +3186,21 @@ fieldset#filters div.add-filter {
 }
 
 input.apply {
-  background-image: url(../images/check.png);
+  background-image: url(check.png);
 }
 
 input.clear {
-  background-image: url(../images/refresh.png);
+  background-image: url(refresh.png);
 }
 
 input.save {
-  background-image: url(../images/disk.png);
+  background-image: url(disk.png);
 }
 
 a#extras-close {
   position: absolute;
   color: #fff;
-  background: url(../images/arrow-up-white.png) no-repeat right center;
+  background: url(arrow-up-white.png) no-repeat right center;
   right: 10px;
   padding-right: 15px;
   display: none;
@@ -3222,7 +3222,7 @@ form#issue-list {
 
 #content table th {
   font-weight: normal;
-  background: #f3f3f3 url(../images/gradient-down.png) repeat-x;
+  background: #f3f3f3 url(gradient-down.png) repeat-x;
 }
 
 #content table.issues td,
@@ -3240,11 +3240,11 @@ form#issue-list {
 }
 
 #content table th.current-sort {
-  background: #fff url(../images/gradient-up.png) repeat-x;
+  background: #fff url(gradient-up.png) repeat-x;
 }
 
 #content table th.current-sort a {
-  background: url(../images/arrow-down-3.png) no-repeat right center;
+  background: url(arrow-down-3.png) no-repeat right center;
   padding-right: 16px;
   display: block;
 }
@@ -3258,7 +3258,7 @@ form#issue-list {
 }
 
 #content table td.issue {
-  background: url(../images/arrow-bottom-right.png) no-repeat right bottom;
+  background: url(arrow-bottom-right.png) no-repeat right bottom;
   width: 42px;
   cursor: context-menu;
 }
@@ -3268,7 +3268,7 @@ form#issue-list {
 }
 
 #content table a.toggle-select {
-  background: url(../images/check.png) no-repeat center center;
+  background: url(check.png) no-repeat center center;
   display: block;
   text-indent: -9999em;
 }
@@ -3322,7 +3322,7 @@ form#issue-list {
 
 .title-bar .update a {
   padding-left: 26px;
-  background: url(../images/edit.png) no-repeat 5px center;
+  background: url(edit.png) no-repeat 5px center;
   font-weight: bold;
 }
 
@@ -3379,7 +3379,7 @@ div.issue h3 {
 
 .attachments h4 {
   margin-bottom: 6px;
-  background: url(../images/files-showhide.png) no-repeat right bottom;
+  background: url(files-showhide.png) no-repeat right bottom;
   cursor: pointer;
 }
 
@@ -3472,11 +3472,11 @@ table.files {
 }
 
 .contextual .edit {
-  background-image: url(../images/edit.png);
+  background-image: url(edit.png);
 }
 
 .contextual .comment {
-  background-image: url(../images/comment.png);
+  background-image: url(comment.png);
 }
 
 .question-line {
@@ -3495,7 +3495,7 @@ table.files {
 
 blockquote {
   font-style: italic;
-  background: url(../images/blockquote-bg.png) no-repeat 25px 3px;
+  background: url(blockquote-bg.png) no-repeat 25px 3px;
 }
 
 .wiki ul li {
@@ -3583,7 +3583,7 @@ ul.projects .description {
 
 .nosidebar ul.projects li .my-project {
   padding: 0 0 0 24px;
-  background: url(../images/star.png) no-repeat left top;
+  background: url(star.png) no-repeat left top;
 }
 
 ul.projects a {
@@ -3600,7 +3600,7 @@ ul.projects li div.root {
 }
 
 .nosidebar ul li {
-  background: url(../images/dot-blue.png) no-repeat left top;
+  background: url(dot-blue.png) no-repeat left top;
 }
 
 .nosidebar ol,
@@ -3624,7 +3624,7 @@ ul.projects li div.root {
 
 .issue .profile-box ul,
 .journal .profile-box ul {
-  background: url(../images/profile-arrow-up.png) no-repeat 175px top;
+  background: url(profile-arrow-up.png) no-repeat 175px top;
   position: relative;
   z-index: 11;
   top: -8px;
@@ -3663,7 +3663,7 @@ ul.projects li div.root {
 
 .profile-box .vcard {
   padding-left: 20px !important;
-  background: url(../images/vcard.png) no-repeat left center;
+  background: url(vcard.png) no-repeat left center;
   display: block;
 }
 
@@ -3681,7 +3681,7 @@ a.has-thumb img {
 
 a.has-thumb.active {
   left: -10px;
-  background: url(../images/thumb-arrow-right.png) no-repeat left center;
+  background: url(thumb-arrow-right.png) no-repeat left center;
   padding-left: 10px;
   margin-right: -10px;
 }
@@ -3715,7 +3715,7 @@ td.issue div.issue-wrap-outer {
   bottom: -6px;
   left: 76px;
   z-index: 16;
-  background: url(../images/tooltip-arrow.png) no-repeat left top;
+  background: url(tooltip-arrow.png) no-repeat left top;
 }
 
 .js-tooltip .meta {
@@ -4101,11 +4101,11 @@ tr.time-entry {
 /*===== Replacement Images =====*/
 .icon-edit,
 .title-bar .update a {
-  background-image: url(../images/pencil.png);
+  background-image: url(pencil.png);
 }
 
 .icon-del {
-  background-image: url(../images/delete.png);
+  background-image: url(delete.png);
 }
 
 .journal .contextual a[title=Edit] img {
@@ -4113,7 +4113,7 @@ tr.time-entry {
 }
 
 .journal .contextual a[title=Edit] {
-  background: url(../images/pencil.png) no-repeat;
+  background: url(pencil.png) no-repeat;
 }
 
 /* -- New #main-menu toggle CSS */
@@ -4171,7 +4171,7 @@ table.files a.icon-delete {
   text-indent: -9999em;
   width: 16px;
   height: 16px;
-  background: url(../images/delete.png) no-repeat 0 0;
+  background: url(delete.png) no-repeat 0 0;
   margin-right: 6px;
 }
 
@@ -4293,73 +4293,73 @@ Additional wiki styles
 
 .wiki p.see-also,
 .wiki span.see-also {
-  background: url(../images/wiki_styles/see-also.png) 4px 4px no-repeat #f5fffa;
+  background: url(wiki_styles/see-also.png) 4px 4px no-repeat #f5fffa;
   border: 1px solid #AAB1AD;
 }
 
 .wiki p.smallsee-also,
 .wiki span.smallsee-also {
-  background: url(../images/wiki_styles/see-also_small.png) 4px 4px no-repeat #f5fffa;
+  background: url(wiki_styles/see-also_small.png) 4px 4px no-repeat #f5fffa;
   border: 1px solid #AAB1AD;
 }
 
 .wiki p.caution,
 .wiki span.caution {
-  background: url(../images/wiki_styles/caution.png) 4px 6px no-repeat #f5fffa;
+  background: url(wiki_styles/caution.png) 4px 6px no-repeat #f5fffa;
   border: 1px solid #AAB1AD;
 }
 
 .wiki p.smallcaution,
 .wiki span.smallcaution {
-  background: url(../images/wiki_styles/caution_small.png) 4px 4px no-repeat #f5fffa;
+  background: url(wiki_styles/caution_small.png) 4px 4px no-repeat #f5fffa;
   border: 1px solid #AAB1AD;
 }
 
 .wiki p.important,
 .wiki span.important {
-  background: url(../images/wiki_styles/important.png) 4px 7px no-repeat #F0F8FF;
+  background: url(wiki_styles/important.png) 4px 7px no-repeat #F0F8FF;
   border: 1px solid #C1C8CF;
 }
 
 .wiki p.smallimportant,
 .wiki span.smallimportant {
-  background: url(../images/wiki_styles/important_small.png) 4px 6px no-repeat #F0F8FF;
+  background: url(wiki_styles/important_small.png) 4px 6px no-repeat #F0F8FF;
   border: 1px solid #C1C8CF;
 }
 
 .wiki p.info,
 .wiki span.info {
-  background: url(../images/wiki_styles/info.png) 4px 4px no-repeat #FFFFE0;
+  background: url(wiki_styles/info.png) 4px 4px no-repeat #FFFFE0;
   border: 1px solid #FFFF00;
 }
 
 .wiki p.smallinfo,
 .wiki span.smallinfo {
-  background: url(../images/wiki_styles/info_small.png) 4px 4px no-repeat #FFFFE0;
+  background: url(wiki_styles/info_small.png) 4px 4px no-repeat #FFFFE0;
   border: 1px solid #FFFF00;
 }
 
 .wiki p.tip,
 .wiki span.tip {
-  background: url(../images/wiki_styles/tip.png) 4px 4px no-repeat #F5FFFA;
+  background: url(wiki_styles/tip.png) 4px 4px no-repeat #F5FFFA;
   border: 1px solid #C7CFCA;
 }
 
 .wiki p.smalltip,
 .wiki span.smalltip {
-  background: url(../images/wiki_styles/tip_small.png) 4px 5px no-repeat #F5FFFA;
+  background: url(wiki_styles/tip_small.png) 4px 5px no-repeat #F5FFFA;
   border: 1px solid #C7CFCA;
 }
 
 .wiki p.note,
 .wiki span.note {
-  background: url(../images/wiki_styles/note.png) 6px 4px no-repeat #F5FFFA;
+  background: url(wiki_styles/note.png) 6px 4px no-repeat #F5FFFA;
   border: 1px solid #C7CFCA;
 }
 
 .wiki p.smallnote,
 .wiki span.smallnote {
-  background: url(../images/wiki_styles/note_small.png) 5px 4px no-repeat #F5FFFA;
+  background: url(wiki_styles/note_small.png) 5px 4px no-repeat #F5FFFA;
   border: 1px solid #C7CFCA;
 }
 
