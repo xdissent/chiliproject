@@ -39,12 +39,12 @@ group :test do
   # Shoulda doesn't work nice on 1.9.3 and seems to need test-unit explicitely…
   gem 'test-unit', :platforms => [:mri_19]
   gem 'edavis10-object_daddy', :require => 'object_daddy'
-  gem 'mocha'
+  gem 'mocha', '0.12.1'
   gem 'capybara'
 end
 
 group :ldap do
-  gem "net-ldap", '~> 0.2.2'
+  gem "net-ldap", '~> 0.3.1'
 end
 
 group :openid do
