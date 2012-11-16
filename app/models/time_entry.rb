@@ -33,10 +33,9 @@ class TimeEntry < ActiveRecord::Base
   validates_numericality_of :hours, :allow_nil => true, :message => :invalid
   validates_length_of :comments, :maximum => 255, :allow_nil => true
 
-  named_scope :visible, lambda {|*args| {
-    :include => :project,
-    :conditions => Project.allowed_to_condition(args.first || User.current, :view_time_entries)
-  }}
+  def self.visible(user = nil)
+    includes(:project).where(Project.allowed_to_condition(user || User.current, :view_time_entries))
+  end
 
   safe_attributes 'hours', 'comments', 'issue_id', 'activity_id', 'spent_on', 'custom_field_values'
 
