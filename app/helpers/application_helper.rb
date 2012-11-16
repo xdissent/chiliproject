@@ -14,7 +14,6 @@
 
 require 'forwardable'
 require 'cgi'
-require 'gravatar'
 
 module ApplicationHelper
   include Redmine::I18n
@@ -388,10 +387,11 @@ module ApplicationHelper
     elements.any? ? content_tag('p', args.join(' &#187; ') + ' &#187; ', :class => 'breadcrumb') : nil
   end
 
+  # TODO replace that but something smarter
   def other_formats_links(&block)
-    concat('<p class="other-formats">' + l(:label_export_to))
+    concat(raw('<p class="other-formats">' + l(:label_export_to)))
     yield Redmine::Views::OtherFormatsBuilder.new(self)
-    concat('</p>')
+    concat(raw('</p>'))
   end
 
   def page_header_title
