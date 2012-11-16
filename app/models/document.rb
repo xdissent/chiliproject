@@ -30,8 +30,9 @@ class Document < ActiveRecord::Base
   validates_presence_of :project, :title, :category
   validates_length_of :title, :maximum => 60
 
-  named_scope :visible, lambda {|*args| { :include => :project,
-                                          :conditions => Project.allowed_to_condition(args.first || User.current, :view_documents) } }
+  def visible(user = nil)
+    includes(:project).where(Project.allowed_to_condition(user || User.current, :view_documents))
+  end
 
   safe_attributes 'category_id', 'title', 'description'
 
