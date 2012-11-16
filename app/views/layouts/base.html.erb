@@ -7,22 +7,10 @@
 <meta name="keywords" content="issue,bug,tracker" />
 <%= csrf_meta_tag %>
 <%= favicon_link_tag %>
-<!--
-<%= stylesheet_link_tag 'reset', :media => 'all' %>
-<%= stylesheet_link_tag 'smoothness/jquery-ui', :media => 'all' %>
-<%= stylesheet_link_tag 'application', :media => 'all' %>
-<%= stylesheet_link_tag 'print', :media => 'print' %>
-<%= stylesheet_link_tag 'rtl', :media => 'all' if l(:direction) == 'rtl' %>
-<!--[if lte IE 6]><%= stylesheet_link_tag 'ie6', :media => 'all' %><![endif]-->
-<!--[if lte IE 7]><%= stylesheet_link_tag 'ie7', :media => 'all' %><![endif]-->
-<!--[if gte IE 8]><![endif]-->
--->
 <%= javascript_include_tag 'application' %>
 <%= stylesheet_link_tag 'application' %>
 
-<%= stylesheet_link_tag 'jstoolbar' %>
-
-<!-- page specific tags -->
+<!-- TODO if we compile assets this doesn't make sens:  page specific tags -->
 <%= yield :additional_javascript_tags %>
 <%= yield :additional_stylesheet_tags %>
 

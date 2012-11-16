@@ -126,7 +126,7 @@ $(document).ready(function() {
         $("input#username-pulldown").focus()
       }
     });
-    
+
     return false;
   });
 
@@ -174,7 +174,9 @@ $(document).ready(function() {
   setUpDialogWindow();
 
 
-  $(".focus")[0].focus();
+  if ($(".focus")[0] != undefined) {
+    $(".focus")[0].focus();
+  }
 });
 
 function hideOnLoad() {
