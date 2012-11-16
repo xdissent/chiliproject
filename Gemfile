@@ -31,18 +31,17 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-
 group :test do
   gem 'shoulda', '~> 2.10.3'
   # Shoulda doesn't work nice on 1.9.3 and seems to need test-unit explicitely…
   gem 'test-unit', :platforms => [:mri_19]
   gem 'edavis10-object_daddy', :require => 'object_daddy'
-  gem 'mocha'
+  gem 'mocha', '0.12.1'
   gem 'capybara'
 end
 
 group :ldap do
-  gem "net-ldap", '~> 0.2.2'
+  gem "net-ldap", '~> 0.3.1'
 end
 
 group :openid do
@@ -53,7 +52,7 @@ group :rmagick do
   gem "rmagick", ">= 1.15.17"
 end
 
-platforms :mri, :mingw do
+platforms :mri, :mingw, :rbx do
   group :mysql2 do
     gem "mysql2", "~> 0.2.7"
   end
@@ -73,7 +72,7 @@ platforms :mri_18, :mingw_18 do
   end
 end
 
-platforms :mri_19, :mingw_19 do
+platforms :mri_19, :mingw_19, :rbx do
   group :sqlite do
     gem "sqlite3"
   end

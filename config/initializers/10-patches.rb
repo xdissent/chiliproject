@@ -78,6 +78,53 @@ module ActionView
         end
       end
     end
+
+    module FormHelper
+      # Returns an input tag of the "date" type tailored for accessing a specified attribute (identified by +method+) on an object
+      # assigned to the template (identified by +object+). Additional options on the input tag can be passed as a
+      # hash with +options+. These options will be tagged onto the HTML as an HTML element attribute as in the example
+      # shown.
+      #
+      # ==== Examples
+      #   date_field(:user, :birthday, :size => 20)
+      #   # => <input type="date" id="user_birthday" name="user[birthday]" size="20" value="#{@user.birthday}" />
+      #
+      #   date_field(:user, :birthday, :class => "create_input")
+      #   # => <input type="date" id="user_birthday" name="user[birthday]" value="#{@user.birthday}" class="create_input" />
+      #
+      # NOTE: This will be part of rails 4.0, the monkey patch can be removed by then.
+      def date_field(object_name, method, options = {})
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_input_field_tag("date", options)
+      end
+    end
+
+    # As ActionPacks metaprogramming will already have happened when we're here,
+    # we have to tell the FormBuilder about the above date_field ourselvse
+    #
+    # NOTE: This can be remove when the above ActionView::Helpers::FormHelper#date_field is removed
+    class FormBuilder
+      self.field_helpers << "date_field"
+
+      def date_field(method, options = {})
+        @template.date_field(@object_name, method, objectify_options(options))
+      end
+    end
+
+    module FormTagHelper
+      # Creates a date form input field.
+      #
+      # ==== Options
+      # * Creates standard HTML attributes for the tag.
+      #
+      # ==== Examples
+      #   date_field_tag 'meeting_date'
+      #   # => <input id="meeting_date" name="meeting_date" type="date" />
+      #
+      # NOTE: This will be part of rails 4.0, the monkey patch can be removed by then.
+      def date_field_tag(name, value = nil, options = {})
+        text_field_tag(name, value, options.stringify_keys.update("type" => "date"))
+      end
+    end
   end
 end
 
@@ -113,6 +160,80 @@ module ActionController
       def api(&block)
         any(:xml, :json, &block)
       end
+    end
+  end
+
+  # Backported fix for
+  # CVE-2012-2660
+  # https://groups.google.com/group/rubyonrails-security/browse_thread/thread/f1203e3376acec0f
+  #
+  # CVE-2012-2694
+  # https://groups.google.com/group/rubyonrails-security/browse_thread/thread/8c82d9df8b401c5e
+  #
+  # TODO: Remove this once we are on Rails >= 3.2.6
+  require 'action_controller/request'
+  class Request
+    protected
+
+    # Remove nils from the params hash
+    def deep_munge(hash)
+      keys = hash.keys.find_all { |k| hash[k] == [nil] }
+      keys.each { |k| hash[k] = nil }
+
+      hash.each_value do |v|
+        case v
+        when Array
+          v.grep(Hash) { |x| deep_munge(x) }
+          v.compact!
+        when Hash
+          deep_munge(v)
+        end
+      end
+
+      hash
+    end
+
+    def parse_query(qs)
+      deep_munge(super)
+    end
+  end
+end
+
+# Backported fix for CVE-2012-2695
+# https://groups.google.com/group/rubyonrails-security/browse_thread/thread/9782f44c4540cf59
+# TODO: Remove this once we are on Rails >= 3.2.6
+require 'active_record/base'
+module ActiveRecord
+  class Base
+    class << self
+      def sanitize_sql_hash_for_conditions(attrs, default_table_name = quoted_table_name, top_level = true)
+        attrs = expand_hash_conditions_for_aggregates(attrs)
+
+        conditions = attrs.map do |attr, value|
+          table_name = default_table_name
+
+          if not value.is_a?(Hash)
+            attr = attr.to_s
+
+            # Extract table name from qualified attribute names.
+            if attr.include?('.') and top_level
+              attr_table_name, attr = attr.split('.', 2)
+              attr_table_name = connection.quote_table_name(attr_table_name)
+            else
+              attr_table_name = table_name
+            end
+
+            attribute_condition("#{attr_table_name}.#{connection.quote_column_name(attr)}", value)
+          elsif top_level
+            sanitize_sql_hash_for_conditions(value, connection.quote_table_name(attr.to_s), false)
+          else
+            raise ActiveRecord::StatementInvalid
+          end
+        end.join(' AND ')
+
+        replace_bind_variables(conditions, expand_range_bind_variables(attrs.values))
+      end
+      alias_method :sanitize_sql_hash, :sanitize_sql_hash_for_conditions
     end
   end
 end

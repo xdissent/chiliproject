@@ -17,8 +17,8 @@ require 'cgi'
 
 class ApplicationController < ActionController::Base
   helper :all
-  
-  class_attribute :model_object 
+
+  class_attribute :model_object
   class_attribute :accept_key_auth_actions
   protected
 
