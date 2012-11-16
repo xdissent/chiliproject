@@ -365,59 +365,7 @@ function observeProjectModules() {
     setVisible('project_trackers', c);
     setVisible('project_issue_custom_fields', c);
   };
-  
+
   Event.observe(window, 'load', f);
   Event.observe('project_enabled_module_names_issue_tracking', 'change', f);
 }
-
-
-/* 
- * TODO Remove
- * 1 - registers a callback which copies the csrf token into the
- * X-CSRF-Token header with each ajax request.  Necessary to 
- * work with rails applications which have fixed
- * CVE-2011-0447
- * 2 - shows and hides ajax indicator
-Ajax.Responders.register({
-    onCreate: function(request){
-        var csrf_meta_tag = $$('meta[name=csrf-token]')[0];
-
-        if (csrf_meta_tag) {
-            var header = 'X-CSRF-Token',
-                token = csrf_meta_tag.readAttribute('content');
-
-            if (!request.options.requestHeaders) {
-              request.options.requestHeaders = {};
-            }
-            request.options.requestHeaders[header] = token;
-          }
-
-        if ($('ajax-indicator') && Ajax.activeRequestCount > 0) {
-            Element.show('ajax-indicator');
-        }
-    },
-    onComplete: function(){
-        if ($('ajax-indicator') && Ajax.activeRequestCount == 0) {
-            Element.hide('ajax-indicator');
-        }
-    }
-});
- */
-
-
-/*
- * TODO remove it
-// Automatically use format.js for jQuery Ajax
-jQuery.ajaxSetup({
-    'beforeSend': function(xhr) {
-        xhr.setRequestHeader("Accept", "text/javascript");
-
-        // TODO: Remove once jquery-rails (Rails 3) has been added a dependency
-        var csrf_meta_tag = jQuery('meta[name="csrf-token"]');
-        if (csrf_meta_tag) {
-            xhr.setRequestHeader('X-CSRF-Token', csrf_meta_tag.attr('content'));
-        }
-    }
-})
-*/
-

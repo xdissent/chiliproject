@@ -15,7 +15,6 @@ gem "rubytree", "~> 0.5.2", :require => 'tree'
 gem "rdoc", ">= 2.4.2"
 gem "liquid", "~> 2.3.0"
 gem "acts-as-taggable-on", "= 2.1.0"
-
 gem 'awesome_nested_set'
 gem 'open_id_authentication'
 gem 'gravatarify', '~> 3.0.0'
@@ -33,18 +32,17 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-
 group :test do
   gem 'shoulda', '~> 2.10.3'
   # Shoulda doesn't work nice on 1.9.3 and seems to need test-unit explicitely…
   gem 'test-unit', :platforms => [:mri_19]
   gem 'edavis10-object_daddy', :require => 'object_daddy'
-  gem 'mocha'
+  gem 'mocha', '0.12.1'
   gem 'capybara'
 end
 
 group :ldap do
-  gem "net-ldap", '~> 0.2.2'
+  gem "net-ldap", '~> 0.3.1'
 end
 
 group :openid do
@@ -54,12 +52,6 @@ end
 group :rmagick do
   gem "rmagick", ">= 1.15.17"
 end
-
-# Use the commented pure ruby gems, if you have not the needed prerequisites on
-# board to compile the native ones.  Note, that their use is discouraged, since
-# their integration is propbably not that well tested and their are slower in
-# orders of magnitude compared to their native counterparts. You have been
-# warned.
 
 platforms :mri, :mingw, :rbx do
   group :mysql2 do
