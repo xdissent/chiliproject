@@ -480,6 +480,7 @@ module ApplicationHelper
       text = liquid_template.render(liquid_variables, :registers => {:view => self, :object => obj, :attribute => attr})
 
       # Add Liquid errors to the log
+      # TODO think if this can be moved into liquire library
       if Rails.logger && Rails.logger.debug?
         msg = ""
         liquid_template.errors.each do |exception|
@@ -513,7 +514,7 @@ module ApplicationHelper
       replace_toc(text, @parsed_headings)
     end
 
-    text
+    sanitize(text)
   end
 
   def parse_non_pre_blocks(text)
