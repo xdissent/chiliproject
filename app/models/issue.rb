@@ -72,7 +72,7 @@ class Issue < ActiveRecord::Base
 
   scope :recently_updated, order("updated_on DESC")
   scope :with_limit, lambda { |lim| limit(lim) }
-  scope :on_active_project, joins([:status, :project, :tracker]).where(:project => {:status => Project::STATUS_ACTIVE})
+  scope :on_active_project, joins([:status, :project, :tracker]).where(:projects => {:status => Project::STATUS_ACTIVE})
 
   scope :without_version, where(:fixed_version_id => nil)
 
