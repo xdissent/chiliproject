@@ -43,12 +43,6 @@ class ProjectsController < ApplicationController
       format.html {
         @projects = Project.visible.find(:all, :order => 'lft')
       }
-     # TODO replace by rabl
-     # format.api  {
-     #   @offset, @limit = api_offset_and_limit
-     #   @project_count = Project.visible.count
-     #   @projects = Project.visible.all(:offset => @offset, :limit => @limit, :order => 'lft')
-     # }
       format.atom {
         projects = Project.visible.find(:all, :order => 'created_on DESC',
                                               :limit => Setting.feeds_limit.to_i)
@@ -78,12 +72,10 @@ class ProjectsController < ApplicationController
           flash[:notice] = l(:notice_successful_create)
           redirect_to :controller => 'projects', :action => 'settings', :id => @project
         }
-        format.api  { render :action => 'show', :status => :created, :location => url_for(:controller => 'projects', :action => 'show', :id => @project.id) }
       end
     else
       respond_to do |format|
         format.html { render :action => 'new' }
-        format.api  { render_validation_errors(@project) }
       end
     end
 
@@ -147,7 +139,6 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.api
     end
   end
 
@@ -166,7 +157,6 @@ class ProjectsController < ApplicationController
           flash[:notice] = l(:notice_successful_update)
           redirect_to :action => 'settings', :id => @project
         }
-        format.api  { head :ok }
       end
     else
       respond_to do |format|
@@ -174,7 +164,6 @@ class ProjectsController < ApplicationController
           load_project_settings
           render :action => 'settings'
         }
-        format.api  { render_validation_errors(@project) }
       end
     end
   end
@@ -209,7 +198,6 @@ class ProjectsController < ApplicationController
         @project_to_destroy.destroy
         respond_to do |format|
           format.html { redirect_to :controller => 'admin', :action => 'projects' }
-          format.api  { head :ok }
         end
       end
     end
