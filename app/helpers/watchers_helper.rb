@@ -14,19 +14,6 @@
 
 module WatchersHelper
 
-  # Deprecated method. Use watcher_link instead
-  #
-  # This method will be removed in ChiliProject 3.0 or later
-  def watcher_tag(object, user, options={:replace => 'watcher'})
-    ActiveSupport::Deprecation.warn "The WatchersHelper#watcher_tag is deprecated and will be removed in ChiliProject 3.0. Please use WatchersHelper#watcher_link instead. Please also note the differences between the APIs.", caller
-
-    options[:id] ||= options[:replace] if options[:replace].is_a? String
-
-    options[:replace] = Array(options[:replace]).map { |id| "##{id}" }
-
-    watcher_link(object, user, options)
-  end
-
   # Create a link to watch/unwatch object
   #
   # * :replace - a string or array of strings with css selectors that will be updated, whenever the watcher status is changed
@@ -45,10 +32,10 @@ module WatchersHelper
 
     url_options = {:url => url}
 
-    html_options = options.merge(:href => url_for(url))
+    html_options = options.merge(:href => url_for(url), :remote => true)
     html_options[:class] = html_options[:class].to_s + (watched ? ' icon icon-fav' : ' icon icon-fav-off')
 
-    link_to_remote((watched ? l(:button_unwatch) : l(:button_watch)), url_options, html_options)
+    link_to((watched ? l(:button_unwatch) : l(:button_watch)), url_options, html_options)
   end
 
   # Returns a comma separated list of users watching the given object
@@ -64,6 +51,7 @@ module WatchersHelper
                :user_id => user}
         s += ' ' + link_to_remote(image_tag('delete.png'),
                                   {:url => url},
+                                  :remote => true,
                                   :href => url_for(url),
                                   :style => "vertical-align: middle",
                                   :class => "delete")

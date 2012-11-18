@@ -11,6 +11,7 @@
 #
 # See doc/COPYRIGHT.rdoc for more details.
 #++
+#
 
 class Principal < ActiveRecord::Base
   set_table_name "#{table_name_prefix}users#{table_name_suffix}"

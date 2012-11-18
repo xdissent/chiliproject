@@ -51,7 +51,7 @@ class User < Principal
 
   # Active non-anonymous users scope
   scope :active, where(:status => STATUS_ACTIVE)
- 
+
 
   acts_as_customizable
 
