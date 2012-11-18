@@ -107,7 +107,7 @@
   <% display_sidebar = false %>
   <% end %>
   <div id="main" class="<%= side_displayed ? '' : "nosidebar" %>">
-    <% if (side_displayed) %>
+    <% if side_displayed %>
       <div id="side-container">
         <div id="main-menu">
           <%= main_menu %>
@@ -135,7 +135,7 @@
 
   <div id="footer">
     <div class="bgl"><div class="bgr">
-        <%= l(:text_powered_by, :link => link_to(Redmine::Info.app_name, Redmine::Info.url)) %>
+        <%= l(:text_powered_by, :link => link_to(Redmine::Info.app_name, Redmine::Info.url)).html_safe %>
       </div></div>
   </div>
 
