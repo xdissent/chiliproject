@@ -14,3 +14,4 @@
 //= require jquery_ujs
 //= require base
 //= require old/jquery-ui.min
+//= require old/jquery.menu_expand
