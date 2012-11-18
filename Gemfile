@@ -8,6 +8,8 @@ gem 'rails', '3.2.6'
 gem 'sqlite3'
 gem 'therubyracer'
 
+gem 'debugger'
+
 
 # chiliproject
 gem "coderay", "~> 1.0.0"
