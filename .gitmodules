@@ -1,0 +1,3 @@
+[submodule "vendor/plugins/acts_as_queryable"]
+	path = vendor/plugins/acts_as_queryable
+	url = https://github.com/xdissent/acts_as_queryable.git
