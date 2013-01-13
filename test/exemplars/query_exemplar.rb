@@ -12,7 +12,7 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
-class Query < ActiveRecord::Base
+class Query < QueryableQuery
   generator_for :name, :method => :next_name
 
   def self.next_name

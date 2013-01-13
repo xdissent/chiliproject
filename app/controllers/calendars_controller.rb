@@ -15,11 +15,14 @@
 class CalendarsController < ApplicationController
   menu_item :calendar
   before_filter :find_optional_project
+  before_filter :find_query_object
 
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
 
   include QueriesHelper
   include SortHelper
+
+  query_class Query
 
   def show
     if params[:year] and params[:year].to_i > 1900
@@ -32,7 +35,6 @@ class CalendarsController < ApplicationController
     @month ||= Date.today.month
 
     @calendar = Redmine::Helpers::Calendar.new(Date.civil(@year, @month, 1), current_language, :month)
-    retrieve_query
     @query.group_by = nil
     if @query.valid?
       events = []

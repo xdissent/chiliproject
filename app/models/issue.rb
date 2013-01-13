@@ -12,6 +12,8 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
+# require_dependency 'query'
+
 class Issue < ActiveRecord::Base
   include Redmine::SafeAttributes
 
@@ -44,6 +46,29 @@ class Issue < ActiveRecord::Base
                                                   t << (IssueStatus.find_by_id(o.new_value_for(:status_id)).try(:is_closed?) ? '-closed' : '-edit')
                                                 end
                                                 t }
+
+  acts_as_queryable :class_name => "Query", :columns => [
+    QueryColumn.new(:project, :sortable => "#{Project.table_name}.name", :groupable => true),
+    QueryColumn.new(:tracker, :sortable => "#{Tracker.table_name}.position", :groupable => true),
+    QueryColumn.new(:parent, :sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue),
+    QueryColumn.new(:status, :sortable => "#{IssueStatus.table_name}.position", :groupable => true),
+    QueryColumn.new(:priority, :sortable => "#{IssuePriority.table_name}.position", :default_order => 'desc', :groupable => true),
+    QueryColumn.new(:subject, :sortable => "#{::Issue.table_name}.subject"),
+    QueryColumn.new(:author),
+    QueryColumn.new(:assigned_to, :sortable => ["#{User.table_name}.lastname", "#{User.table_name}.firstname", "#{User.table_name}.id"], :groupable => true),
+    QueryColumn.new(:updated_on, :sortable => "#{::Issue.table_name}.updated_on", :default_order => 'desc'),
+    QueryColumn.new(:category, :sortable => "#{IssueCategory.table_name}.name", :groupable => true),
+    QueryColumn.new(:fixed_version, :sortable => ["#{Version.table_name}.effective_date", "#{Version.table_name}.name"], :default_order => 'desc', :groupable => true),
+    # Put empty start_dates and due_dates in the far future rather than in the far past
+    QueryColumn.new(:start_date, :sortable => ["CASE WHEN #{::Issue.table_name}.start_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.start_date"]),
+    QueryColumn.new(:due_date, :sortable => ["CASE WHEN #{::Issue.table_name}.due_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.due_date"]),
+    QueryColumn.new(:estimated_hours, :sortable => "#{::Issue.table_name}.estimated_hours"),
+    QueryColumn.new(:done_ratio, :sortable => "#{::Issue.table_name}.done_ratio", :groupable => true),
+    QueryColumn.new(:created_on, :sortable => "#{::Issue.table_name}.created_on", :default_order => 'desc'),
+  ], :operators_by_filter_type => {
+    :list_status => [ "o", "=", "!", "c", "*" ], 
+    :list_subprojects => [ "*", "!*", "=" ]
+  }
 
   register_on_journal_formatter(:id, 'parent_id')
   register_on_journal_formatter(:named_association, 'project_id', 'status_id', 'tracker_id', 'assigned_to_id',

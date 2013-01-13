@@ -15,6 +15,7 @@
 class GanttsController < ApplicationController
   menu_item :gantt
   before_filter :find_optional_project
+  before_filter :find_query_object
 
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
 
@@ -22,10 +23,11 @@ class GanttsController < ApplicationController
   include SortHelper
   include Redmine::Export::PDF
 
+  query_class Query
+
   def show
     @gantt = Redmine::Helpers::Gantt.new(params)
     @gantt.project = @project
-    retrieve_query
     @query.group_by = nil
     @gantt.query = @query if @query.valid?
 

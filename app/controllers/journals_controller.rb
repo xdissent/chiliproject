@@ -15,6 +15,7 @@
 require 'diff'
 
 class JournalsController < ApplicationController
+  before_filter :find_query_object, :only => [:index]
   before_filter :find_journal, :only => [:edit, :diff]
   before_filter :find_issue, :only => [:new]
   before_filter :find_optional_project, :only => [:index]
@@ -25,8 +26,9 @@ class JournalsController < ApplicationController
   include QueriesHelper
   include SortHelper
 
+  query_class Query
+
   def index
-    retrieve_query
     sort_init 'id', 'desc'
     sort_update(@query.sortable_columns)
 
