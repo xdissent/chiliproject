@@ -48,26 +48,46 @@ class Issue < ActiveRecord::Base
                                                 t }
 
   acts_as_queryable :columns => [
-    QueryColumn.new(:project, :sortable => "#{Project.table_name}.name", :groupable => true),
-    QueryColumn.new(:tracker, :sortable => "#{Tracker.table_name}.position", :groupable => true),
-    QueryColumn.new(:parent, :sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue),
-    QueryColumn.new(:status, :sortable => "#{IssueStatus.table_name}.position", :groupable => true),
-    QueryColumn.new(:priority, :sortable => "#{IssuePriority.table_name}.position", :default_order => 'desc', :groupable => true),
-    QueryColumn.new(:subject, :sortable => "#{::Issue.table_name}.subject"),
-    QueryColumn.new(:author),
-    QueryColumn.new(:assigned_to, :sortable => ["#{User.table_name}.lastname", "#{User.table_name}.firstname", "#{User.table_name}.id"], :groupable => true),
-    QueryColumn.new(:updated_on, :sortable => "#{::Issue.table_name}.updated_on", :default_order => 'desc'),
-    QueryColumn.new(:category, :sortable => "#{IssueCategory.table_name}.name", :groupable => true),
-    QueryColumn.new(:fixed_version, :sortable => ["#{Version.table_name}.effective_date", "#{Version.table_name}.name"], :default_order => 'desc', :groupable => true),
+    {:name => :project, :sortable => "#{Project.table_name}.name", :groupable => true},
+    {:name => :tracker, :sortable => "#{Tracker.table_name}.position", :groupable => true},
+    {:name => :parent, :sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue},
+    {:name => :status, :sortable => "#{IssueStatus.table_name}.position", :groupable => true},
+    {:name => :priority, :sortable => "#{IssuePriority.table_name}.position", :default_order => 'desc', :groupable => true},
+    {:name => :subject, :sortable => "#{::Issue.table_name}.subject"},
+    {:name => :author},
+    {:name => :assigned_to, :sortable => ["#{User.table_name}.lastname", "#{User.table_name}.firstname", "#{User.table_name}.id"], :groupable => true},
+    {:name => :updated_on, :sortable => "#{::Issue.table_name}.updated_on", :default_order => 'desc'},
+    {:name => :category, :sortable => "#{IssueCategory.table_name}.name", :groupable => true},
+    {:name => :fixed_version, :sortable => ["#{Version.table_name}.effective_date", "#{Version.table_name}.name"], :default_order => 'desc', :groupable => true},
     # Put empty start_dates and due_dates in the far future rather than in the far past
-    QueryColumn.new(:start_date, :sortable => ["CASE WHEN #{::Issue.table_name}.start_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.start_date"]),
-    QueryColumn.new(:due_date, :sortable => ["CASE WHEN #{::Issue.table_name}.due_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.due_date"]),
-    QueryColumn.new(:estimated_hours, :sortable => "#{::Issue.table_name}.estimated_hours"),
-    QueryColumn.new(:done_ratio, :sortable => "#{::Issue.table_name}.done_ratio", :groupable => true),
-    QueryColumn.new(:created_on, :sortable => "#{::Issue.table_name}.created_on", :default_order => 'desc'),
+    {:name => :start_date, :sortable => ["CASE WHEN #{::Issue.table_name}.start_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.start_date"]},
+    {:name => :due_date, :sortable => ["CASE WHEN #{::Issue.table_name}.due_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.due_date"]},
+    {:name => :estimated_hours, :sortable => "#{::Issue.table_name}.estimated_hours"},
+    {:name => :done_ratio, :sortable => "#{::Issue.table_name}.done_ratio", :groupable => true},
+    {:name => :created_on, :sortable => "#{::Issue.table_name}.created_on", :default_order => 'desc'},
   ], :operators_by_filter_type => {
     :list_status => [ "o", "=", "!", "c", "*" ], 
     :list_subprojects => [ "*", "!*", "=" ]
+  }, :filters => {
+      :status_id => {:type => :list_status, :order => 1, :values => lambda { |q| IssueStatus.find(:all, :order => 'position').collect{ |s| [s.name, s.id.to_s] } }},
+      :tracker_id => {:type => :list, :order => 2, :values => lambda { |q| (q.project.nil? ? Tracker.find(:all, :order => 'position') : q.project.rolled_up_trackers).collect { |s| [s.name, s.id.to_s] } }},
+      :priority_id => {:type => :list, :order => 3, :values => lambda { |q| IssuePriority.all.collect{ |s| [s.name, s.id.to_s] } }},
+      :subject => {:type => :text, :order => 8},
+      :created_on => {:type => :date_past, :order => 9},
+      :updated_on => {:type => :date_past, :order => 10},
+      :start_date => {:type => :date, :order => 11},
+      :due_date => {:type => :date, :order => 12},
+      :estimated_hours => {:type => :integer, :order => 13},
+      :done_ratio =>  {:type => :integer, :order => 14},
+      :assigned_to_id => {:type => :list_optional, :order => 4, :values => lambda { |q| q.user_values }, :if => lambda { |q| !q.user_values.empty? }},
+      :author_id => {:type => :list, :order => 5, :values => lambda { |q| q.user_values }, :if => lambda { |q| !q.user_values.empty? }},
+      :member_of_group => {:type => :list_optional, :order => 6, :values => lambda { |q| Group.all.collect { |g| [g.name, g.id.to_s] } }, :if => lambda { |q| !Group.all.empty? }},
+      :assigned_to_role => {:type => :list_optional, :order => 7, :values => lambda { |q| Role.givable.collect { |r| [r.name, r.id.to_s] } }, :if => lambda { |q| !Role.givable.collect { |r| [r.name, r.id.to_s] }.empty? }},
+      :watcher_id => {:type => :list, :order => 15, :values => lambda { |q| User.current.allowed_to_globally?(:view_issue_watchers, {}) ? q.user_values : [["<< #{l(:label_me)} >>", "me"]] }, :if => lambda { |q| User.current.logged? }},
+      :category_id => {:type => :list_optional, :order => 6, :values => lambda { |q|  }, :if => lambda { |q| q.project && !q.project.issue_categories.all.empty? }},
+      :fixed_version_id => {:type => :list_optional, :order => 7, :values => lambda { |q| (q.project ? q.project.shared_versions.all : Version.visible.find_all_by_sharing('system')).sort.collect { |s| ["#{s.project.name} - #{s.name}", s.id.to_s] } }, :if => lambda { |q| (q.project && !q.project.shared_versions.all.empty?) || (!q.project && !Version.visible.find_all_by_sharing('system').empty?) }},
+      :subproject_id => {:type => :list_subprojects, :order => 13, :values => lambda { |q| q.project.descendants.visible.all.collect{ |s| [s.name, s.id.to_s] } }, :if => lambda { |q| q.project && !q.project.leaf? && !q.project.descendants.visible.all.empty? }},
+      :project_id => {:type => :list, :order => 1, :values => lambda { |q| vs = []; Project.project_tree(Project.visible.all) { |p, l| vs << ["#{(l > 0 ? ('--' * l + ' ') : '')}#{p.name}", p.id.to_s] }; vs }, :if => lambda { |q| !q.project && !Project.visible.all.empty? }}
   }
 
   register_on_journal_formatter(:id, 'parent_id')

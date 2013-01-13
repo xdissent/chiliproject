@@ -11,8 +11,7 @@ class IssueQuery < Query
 
   def available_columns
     return @available_columns if @available_columns
-    @available_columns = self.class.available_columns
-    @available_columns += (project ?
+    @available_columns = super + (project ?
                             project.all_issue_custom_fields :
                             IssueCustomField.find(:all)
                            ).collect {|cf| QueryCustomFieldColumn.new(cf) }
@@ -38,57 +37,7 @@ class IssueQuery < Query
   end
 
   def available_filters
-    return @available_filters if @available_filters
-
-    trackers = project.nil? ? Tracker.find(:all, :order => 'position') : project.rolled_up_trackers
-
-    @available_filters = super.merge({ "status_id" => { :type => :list_status, :order => 1, :values => IssueStatus.find(:all, :order => 'position').collect{|s| [s.name, s.id.to_s] } },
-                           "tracker_id" => { :type => :list, :order => 2, :values => trackers.collect{|s| [s.name, s.id.to_s] } },
-                           "priority_id" => { :type => :list, :order => 3, :values => IssuePriority.all.collect{|s| [s.name, s.id.to_s] } },
-                           "subject" => { :type => :text, :order => 8 },
-                           "created_on" => { :type => :date_past, :order => 9 },
-                           "updated_on" => { :type => :date_past, :order => 10 },
-                           "start_date" => { :type => :date, :order => 11 },
-                           "due_date" => { :type => :date, :order => 12 },
-                           "estimated_hours" => { :type => :integer, :order => 13 },
-                           "done_ratio" =>  { :type => :integer, :order => 14 }})
-
-    @available_filters["assigned_to_id"] = { :type => :list_optional, :order => 4, :values => user_values } unless user_values.empty?
-    @available_filters["author_id"] = { :type => :list, :order => 5, :values => user_values } unless user_values.empty?
-
-    group_values = Group.all.collect {|g| [g.name, g.id.to_s] }
-    @available_filters["member_of_group"] = { :type => :list_optional, :order => 6, :values => group_values } unless group_values.empty?
-
-    role_values = Role.givable.collect {|r| [r.name, r.id.to_s] }
-    @available_filters["assigned_to_role"] = { :type => :list_optional, :order => 7, :values => role_values } unless role_values.empty?
-
-    if User.current.logged?
-      # populate the watcher list with the same user list as other user filters if the user has the :view_issue_watchers permission in at least one project
-      # TODO: this could be differentiated more, e.g. all users could watch issues in public projects, but won't necessarily be shown here
-      watcher_values = User.current.allowed_to_globally?(:view_issue_watchers, {}) ? user_values : [["<< #{l(:label_me)} >>", "me"]]
-      @available_filters["watcher_id"] = { :type => :list, :order => 15, :values => watcher_values }
-    end
-
-    if project
-      # project specific filters
-      categories = @project.issue_categories.all
-      unless categories.empty?
-        @available_filters["category_id"] = { :type => :list_optional, :order => 6, :values => categories.collect{|s| [s.name, s.id.to_s] } }
-      end
-      versions = @project.shared_versions.all
-      unless versions.empty?
-        @available_filters["fixed_version_id"] = { :type => :list_optional, :order => 7, :values => versions.sort.collect{|s| ["#{s.project.name} - #{s.name}", s.id.to_s] } }
-      end
-      add_custom_fields_filters(@project.all_issue_custom_fields)
-    else
-      # global filters for cross project issue list
-      system_shared_versions = Version.visible.find_all_by_sharing('system')
-      unless system_shared_versions.empty?
-        @available_filters["fixed_version_id"] = { :type => :list_optional, :order => 7, :values => system_shared_versions.sort.collect{|s| ["#{s.project.name} - #{s.name}", s.id.to_s] } }
-      end
-      add_custom_fields_filters(IssueCustomField.find(:all, :conditions => {:is_filter => true, :is_for_all => true}))
-    end
-    @available_filters
+    custom_fields_filters.merge super
   end
 
   def add_short_filter(field, expression)
@@ -196,10 +145,14 @@ class IssueQuery < Query
     [super, Issue.visible_condition(User.current)].reject { |s| s.blank? }.join(' AND ')
   end
 
-  def add_custom_fields_filters(custom_fields)
-    @available_filters ||= {}
+  def custom_fields_filters
+    if project
+      custom_fields = project.all_issue_custom_fields
+    else
+      custom_fields = IssueCustomField.find(:all, :conditions => {:is_filter => true, :is_for_all => true})
+    end
 
-    custom_fields.select(&:is_filter?).each do |field|
+    Hash[custom_fields.select(&:is_filter?).map do |field|
       case field.field_format
       when "int", "float"
         options = { :type => :integer, :order => 20 }
@@ -221,8 +174,8 @@ class IssueQuery < Query
       else
         options = { :type => :string, :order => 20 }
       end
-      @available_filters["cf_#{field.id}"] = options.merge({ :name => field.name, :format => field.field_format })
-    end
+      ["cf_#{field.id}", options.merge({ :name => field.name, :format => field.field_format })]
+    end.compact]
   end
 
   # Returns the issue count

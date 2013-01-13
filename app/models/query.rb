@@ -36,35 +36,6 @@ class Query < QueryableQuery
     @user_values
   end
 
-  def project_filters
-    return @project_filters if @project_filters
-
-    @project_filters = {}
-    if project
-      unless project.leaf?
-        subprojects = project.descendants.visible.all
-        unless subprojects.empty?
-          # TODO: check for existence of subproject_id column
-          @project_filters["subproject_id"] = { :type => :list_subprojects, :order => 13, :values => subprojects.collect{|s| [s.name, s.id.to_s] } }
-        end
-      end
-    else
-      all_projects = Project.visible.all
-      project_values = []
-      Project.project_tree(all_projects) do |p, level|
-        prefix = (level > 0 ? ('--' * level + ' ') : '')
-        project_values << ["#{prefix}#{p.name}", p.id.to_s]
-      end
-      @project_filters["project_id"] = { :type => :list, :order => 1, :values => project_values} unless project_values.empty?
-    end
-    @project_filters
-  end
-
-  def available_filters
-    return @available_filters if @available_filters
-    @available_filters = super.merge project_filters
-  end
-
   def project_statement
     project_clauses = []
     if project && !@project.descendants.active.empty?
