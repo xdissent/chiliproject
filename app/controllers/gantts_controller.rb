@@ -19,11 +19,11 @@ class GanttsController < ApplicationController
 
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
 
-  include QueriesHelper
+  include IssueQueriesHelper
   include SortHelper
   include Redmine::Export::PDF
 
-  query_class Query
+  query_class IssueQuery
 
   def show
     @gantt = Redmine::Helpers::Gantt.new(params)

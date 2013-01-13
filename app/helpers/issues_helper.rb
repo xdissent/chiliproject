@@ -120,7 +120,7 @@ module IssuesHelper
       visible = ARCondition.new(["is_public = ? OR user_id = ?", true, (User.current.logged? ? User.current.id : 0)])
       # Project specific queries and global queries
       visible << (@project.nil? ? ["project_id IS NULL"] : ["project_id IS NULL OR project_id = ?", @project.id])
-      @sidebar_queries = Query.find(:all,
+      @sidebar_queries = IssueQuery.find(:all,
                                     :select => 'id, name, is_public',
                                     :order => "name ASC",
                                     :conditions => visible.conditions)

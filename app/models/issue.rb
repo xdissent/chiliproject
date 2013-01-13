@@ -12,7 +12,7 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
-# require_dependency 'query'
+require_dependency 'issue_query'
 
 class Issue < ActiveRecord::Base
   include Redmine::SafeAttributes
@@ -47,7 +47,7 @@ class Issue < ActiveRecord::Base
                                                 end
                                                 t }
 
-  acts_as_queryable :class_name => "Query", :columns => [
+  acts_as_queryable :columns => [
     QueryColumn.new(:project, :sortable => "#{Project.table_name}.name", :groupable => true),
     QueryColumn.new(:tracker, :sortable => "#{Tracker.table_name}.position", :groupable => true),
     QueryColumn.new(:parent, :sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue),
@@ -109,7 +109,7 @@ class Issue < ActiveRecord::Base
 
   named_scope :with_query, lambda {|query|
     {
-      :conditions => Query.merge_conditions(query.statement)
+      :conditions => IssueQuery.merge_conditions(query.statement)
     }
   }
 

@@ -221,7 +221,7 @@ Redmine::MenuManager.map :project_menu do |menu|
     visible = ARCondition.new(["is_public = ? OR user_id = ?", true, (User.current.logged? ? User.current.id : 0)])
     # Project specific queries and global queries
     visible << (p.nil? ? ["project_id IS NULL"] : ["project_id IS NULL OR project_id = ?", p.id])
-    sidebar_queries = Query.find(:all,
+    sidebar_queries = IssueQuery.find(:all,
                                  :select => 'id, name',
                                  :order => "name ASC",
                                  :conditions => visible.conditions)

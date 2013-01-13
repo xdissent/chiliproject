@@ -19,10 +19,10 @@ class CalendarsController < ApplicationController
 
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
 
-  include QueriesHelper
+  include IssueQueriesHelper
   include SortHelper
 
-  query_class Query
+  query_class IssueQuery
 
   def show
     if params[:year] and params[:year].to_i > 1900

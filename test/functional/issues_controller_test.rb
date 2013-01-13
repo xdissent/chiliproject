@@ -248,7 +248,7 @@ class IssuesControllerTest < ActionController::TestCase
 
     # query should use specified columns
     query = assigns(:query)
-    assert_kind_of Query, query
+    assert_kind_of IssueQuery, query
     assert_equal columns, query.column_names.map(&:to_s)
 
     # columns should be stored in session

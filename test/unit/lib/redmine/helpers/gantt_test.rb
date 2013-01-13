@@ -53,7 +53,7 @@ class Redmine::Helpers::GanttTest < ActiveSupport::TestCase
     @project = project
     @gantt = Redmine::Helpers::Gantt.new(options)
     @gantt.project = @project
-    @gantt.query = Query.generate_default!(:project => @project)
+    @gantt.query = IssueQuery.generate_default!(:project => @project)
     @gantt.view = build_view
     @gantt.instance_variable_set('@date_from', options[:date_from] || 2.weeks.ago.to_date)
     @gantt.instance_variable_set('@date_to', options[:date_to] || 2.weeks.from_now.to_date)

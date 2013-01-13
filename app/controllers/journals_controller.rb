@@ -23,10 +23,10 @@ class JournalsController < ApplicationController
   accept_key_auth :index
   menu_item :issues
 
-  include QueriesHelper
+  include IssueQueriesHelper
   include SortHelper
 
-  query_class Query
+  query_class IssueQuery
 
   def index
     sort_init 'id', 'desc'

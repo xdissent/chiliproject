@@ -33,7 +33,7 @@ class ProjectsController < ApplicationController
 
   include SortHelper
   include CustomFieldsHelper
-  include QueriesHelper
+  include IssueQueriesHelper
   include RepositoriesHelper
   include ProjectsHelper
 

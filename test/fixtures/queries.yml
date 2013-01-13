@@ -21,6 +21,7 @@ queries_001:
 
   user_id: 1
   column_names:
+  type: IssueQuery
 queries_002:
   id: 2
   project_id: 1
@@ -39,6 +40,7 @@ queries_002:
 
   user_id: 3
   column_names:
+  type: IssueQuery
 queries_003:
   id: 3
   project_id:
@@ -53,6 +55,7 @@ queries_003:
 
   user_id: 3
   column_names:
+  type: IssueQuery
 queries_004:
   id: 4
   project_id:
@@ -67,6 +70,7 @@ queries_004:
 
   user_id: 2
   column_names:
+  type: IssueQuery
 queries_005:
   id: 5
   project_id:
@@ -87,6 +91,7 @@ queries_005:
       - desc
     - - tracker
       - asc
+  type: IssueQuery
 queries_006:
   id: 6
   project_id:
@@ -106,6 +111,7 @@ queries_006:
     ---
     - - priority
       - desc
+  type: IssueQuery
 queries_007:
   id: 7
   project_id: 2
@@ -120,6 +126,7 @@ queries_007:
 
   user_id: 2
   column_names:
+  type: IssueQuery
 queries_008:
   id: 8
   project_id: 2
@@ -134,6 +141,7 @@ queries_008:
 
   user_id: 2
   column_names:
+  type: IssueQuery
 queries_009:
   id: 9
   project_id:
@@ -153,4 +161,4 @@ queries_009:
     ---
     - - priority
       - desc
-
+  type: IssueQuery

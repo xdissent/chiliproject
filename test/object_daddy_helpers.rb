@@ -40,6 +40,14 @@ module ObjectDaddyHelpers
     query
   end
 
+  # Generate the default Query
+  def IssueQuery.generate_default!(attributes={})
+    query = IssueQuery.spawn(attributes)
+    query.name ||= '_'
+    query.save!
+    query
+  end
+
   # Generate an issue for a project, using it's trackers
   def Issue.generate_for_project!(project, attributes={})
     issue = Issue.spawn(attributes) do |issue|

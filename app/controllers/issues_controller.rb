@@ -35,7 +35,7 @@ class IssuesController < ApplicationController
   include IssueRelationsHelper
   include WatchersHelper
   include AttachmentsHelper
-  include QueriesHelper
+  include IssueQueriesHelper
   include RepositoriesHelper
   include SortHelper
   include IssuesHelper
@@ -49,7 +49,7 @@ class IssuesController < ApplicationController
   verify :method => :post, :only => :bulk_update, :render => {:nothing => true, :status => :method_not_allowed }
   verify :method => :put, :only => :update, :render => {:nothing => true, :status => :method_not_allowed }
 
-  query_class Query
+  query_class IssueQuery
 
   def index
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
