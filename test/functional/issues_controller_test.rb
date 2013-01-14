@@ -252,9 +252,9 @@ class IssuesControllerTest < ActionController::TestCase
     assert_equal columns, query.column_names.map(&:to_s)
 
     # columns should be stored in session
-    assert_kind_of Hash, session[:query_query]
-    assert_kind_of Array, session[:query_query][:column_names]
-    assert_equal columns, session[:query_query][:column_names].map(&:to_s)
+    assert_kind_of Hash, session[:query_issue_query]
+    assert_kind_of Array, session[:query_issue_query][:column_names]
+    assert_equal columns, session[:query_issue_query][:column_names].map(&:to_s)
   end
 
   def test_show_by_anonymous
