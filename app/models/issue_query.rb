@@ -128,7 +128,7 @@ class IssueQuery < Query
 
   # Helper method to generate the WHERE sql for a +field+, +operator+ and a +value+
   def sql_for_field(field, operator=nil, value=nil, db_table=nil, db_field=nil, is_custom_filter=false)
-    case operator_for field
+    case (operator || operator_for(field))
     when "o"
       return "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if field == "status_id"
     when "c"
