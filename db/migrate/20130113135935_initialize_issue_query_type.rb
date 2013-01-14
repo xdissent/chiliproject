@@ -14,7 +14,7 @@
 
 class InitializeIssueQueryType < ActiveRecord::Migration
   def self.up
-    # Remove the newest initial WikiContentJournal (the one erroneously created by a former migration) if there are more than one
+    # All queries were previously for issues.
     execute "UPDATE queries SET type = 'IssueQuery';"
   end
 
