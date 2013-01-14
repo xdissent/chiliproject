@@ -12,6 +12,12 @@ class Query < QueryableQuery
     self.class.available_columns.map { |c| QueryColumn.new c[:name], c.merge({:caption => l(c[:caption] || "field_#{c[:name]}")}) }
   end
 
+  # Translate filter labels
+  def label_for(field)
+    label = available_filters[field][:name] if available_filters.has_key?(field)
+    label ||= l("field_#{field.to_s.gsub(/\_id$/, "")}".to_sym)
+  end
+
   def initialize(attributes = nil)
     super attributes
     self.display_subprojects ||= Setting.display_subprojects_issues?
@@ -73,5 +79,19 @@ class Query < QueryableQuery
 
   def statement
     [super, project_statement].reject { |s| s.blank? }.join(' AND ')
+  end
+
+  # Override day of week to start with day in settings.
+  def sql_for_field(field, operator=nil, value=nil, db_table=nil, db_field=nil, is_custom_filter=false)
+    if (operator || operator_for(field)) == "w"
+      db_table ||= queryable_class.table_name
+      db_field ||= field
+      first_day_of_week = l(:general_first_day_of_week).to_i
+      day_of_week = Date.today.cwday
+      days_ago = (day_of_week >= first_day_of_week ? day_of_week - first_day_of_week : day_of_week + 7 - first_day_of_week)
+      relative_date_clause(db_table, db_field, - days_ago, - days_ago + 6)
+    else
+      super
+    end
   end
 end
