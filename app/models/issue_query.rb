@@ -10,11 +10,7 @@ class IssueQuery < Query
   end
 
   def available_columns
-    return @available_columns if @available_columns
-    @available_columns = super + (project ?
-                            project.all_issue_custom_fields :
-                            IssueCustomField.find(:all)
-                           ).collect {|cf| QueryCustomFieldColumn.new(cf) }
+    super + (project ? project.all_issue_custom_fields : IssueCustomField.find(:all)).collect {|cf| QueryCustomFieldColumn.new(cf) }
   end
 
   def sortable_columns
