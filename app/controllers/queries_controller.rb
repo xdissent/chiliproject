@@ -18,7 +18,7 @@ class QueriesController < ApplicationController
   before_filter :find_optional_project, :only => :new
 
   def new
-    @query = Query.new(params[:query])
+    @query = IssueQuery.new(params[:query])
     @query.project = params[:query_is_for_all] ? nil : @project
     @query.display_subprojects = params[:display_subprojects] if params[:display_subprojects].present?
     @query.user = User.current
@@ -63,7 +63,7 @@ class QueriesController < ApplicationController
 
 private
   def find_query
-    @query = Query.find(params[:id])
+    @query = IssueQuery.find(params[:id])
     @project = @query.project
     render_403 unless @query.editable_by?(User.current)
   rescue ActiveRecord::RecordNotFound
