@@ -7,6 +7,11 @@ class Query < QueryableQuery
   belongs_to :project
   belongs_to :user
 
+  # Translate captions
+  def eval_class_columns
+    self.class.available_columns.map { |c| QueryColumn.new c[:name], c.merge({:caption => l(c[:caption] || "field_#{c[:name]}")}) }
+  end
+
   def initialize(attributes = nil)
     super attributes
     self.display_subprojects ||= Setting.display_subprojects_issues?

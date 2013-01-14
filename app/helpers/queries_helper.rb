@@ -1,6 +1,11 @@
 module QueriesHelper
   include QueryableHelper
 
+  def operators_for_select_with_i18n(filter_type, query_class=nil)
+    operators_for_select_without_i18n(filter_type, query_class).map { |o| [l(o[0]), o[1]] }
+  end
+  alias_method_chain :operators_for_select, :i18n
+
   def column_content_with_chiliproject(column, queryable)
     value = column.value(queryable)
     case value.class.name
