@@ -32,6 +32,6 @@ before_script:
 branches:
   only:
     - master
+    - acts_as_queryable
 notifications:
   email: false
-  irc: "irc.freenode.org#chiliproject"
