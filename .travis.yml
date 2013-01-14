@@ -31,11 +31,7 @@ before_script:
   - "rake ci:travis:prepare"
 branches:
   only:
-    - unstable
     - master
-    - stable
-    - /^stable-.*$/
-    - /^release-.*$/
+    - acts_as_queryable
 notifications:
   email: false
-  irc: "irc.freenode.org#chiliproject"
