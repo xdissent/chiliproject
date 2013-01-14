@@ -20,7 +20,9 @@
     <fieldset id="filters" class="header_collapsible collapsible <%= @query.new_record? ? "" : "collapsed" %>">
     	<legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
     	<div class="filter-fields" style="<%= @query.new_record? ? "" : "display: none;" %>">
-    		<%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+
+        <%= query_filters %>
+
     	</div>
     </fieldset>
     <fieldset id="column_options" class="header_collapsible collapsible collapsed">
