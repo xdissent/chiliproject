@@ -1,10 +1,41 @@
 module QueriesHelper
   include QueryableHelper
 
+  def query_filter_operators_for_with_label(field, query=nil)
+    query ||= @query
+    (label_tag("operators_#{field}", l(:description_filter), :class => "hidden-for-sighted") + 
+      query_filter_operators_for_without_label(field, query))
+  end
+  alias_method_chain :query_filter_operators_for, :label
+
   def operators_for_select_with_i18n(filter_type, query_class=nil)
     operators_for_select_without_i18n(filter_type, query_class).map { |o| [l(o[0]), o[1]] }
   end
   alias_method_chain :operators_for_select, :i18n
+
+  def query_filter_add_with_i18n(query=nil)
+    query ||= @query
+    field_options = query.available_filters_sorted.map do |field| 
+      [query.label_for(field[0]), field[0]] unless query.has_filter?(field[0])
+    end.compact
+    (label_tag('add_filter_select', l(:label_filter_add)) + 
+      select_tag('add_filter_select', 
+        options_for_select([["",""]] + field_options),
+        :onchange => "add_filter();",
+        :class => "select-small",
+        :name => nil))
+  end
+  alias_method_chain :query_filter_add, :i18n
+
+  def query_filter_scripts_with_head(query=nil)
+    query ||= @query
+    return if @query_scripted
+    @query_scripted = true
+    content_for :header_tags do
+      concat query_filter_scripts_without_head(query)
+    end
+  end
+  alias_method_chain :query_filter_scripts, :head
 
   def column_content_with_chiliproject(column, queryable)
     value = column.value(queryable)
@@ -17,6 +48,10 @@ module QueriesHelper
       link_to(h(value), :controller => 'versions', :action => 'show', :id => value)
     when 'Issue'
       link_to_issue(value, :subject => false)
+    when 'TrueClass'
+      l(:general_text_Yes)
+    when 'FalseClass'
+      l(:general_text_No)
     else
       column_content_without_chiliproject(column, queryable)
     end
