@@ -1,41 +1,65 @@
 module QueriesHelper
+  unloadable
+
   include QueryableHelper
 
-  def query_filter_operators_for_with_label(field, query=nil)
-    query ||= @query
-    (label_tag("operators_#{field}", l(:description_filter), :class => "hidden-for-sighted") + 
-      query_filter_operators_for_without_label(field, query))
-  end
-  alias_method_chain :query_filter_operators_for, :label
-
-  def operators_for_select_with_i18n(filter_type, query_class=nil)
-    operators_for_select_without_i18n(filter_type, query_class).map { |o| [l(o[0]), o[1]] }
-  end
-  alias_method_chain :operators_for_select, :i18n
-
-  def query_filter_add_with_i18n(query=nil)
-    query ||= @query
-    field_options = query.available_filters_sorted.map do |field| 
-      [query.label_for(field[0]), field[0]] unless query.has_filter?(field[0])
-    end.compact
-    (label_tag('add_filter_select', l(:label_filter_add)) + 
-      select_tag('add_filter_select', 
-        options_for_select([["",""]] + field_options),
-        :onchange => "add_filter();",
-        :class => "select-small",
-        :name => nil))
-  end
-  alias_method_chain :query_filter_add, :i18n
-
-  def query_filter_scripts_with_head(query=nil)
-    query ||= @query
-    return if @query_scripted
-    @query_scripted = true
+  def query_scripts
     content_for :header_tags do
-      concat query_filter_scripts_without_head(query)
+      super
     end
   end
-  alias_method_chain :query_filter_scripts, :head
+
+  def query_styles
+    content_for :header_tags do
+      super
+    end
+  end
+
+
+
+  def query_columns_available_options(query=nil)
+    query_translate_options super
+  end
+
+  def query_columns_available_label(query=nil)
+    label_tag "available_columns", l(:description_available_columns)
+  end
+
+  def query_columns_selected_options(query=nil)
+    query_translate_options super
+  end
+
+  def query_columns_selected_label(query=nil)
+    label_tag "selected_columns", l(:description_selected_columns)
+  end
+
+
+
+  def query_filter_operator_options(field, query=nil)
+    query_translate_options super
+  end
+
+  def query_filter_operator_label(field, query=nil)
+    label_tag "operators_#{field}", l(:description_filter)
+  end
+
+  def query_filter_add_options(query=nil)
+    [["",""]] + query_translate_options((super)[1..-1])
+  end
+
+  def query_filter_add_label(query=nil)
+    label_tag "add_filter_select", l(:label_filter_add)
+  end
+
+  private
+
+  def query_translate_options(options)
+    options.map { |o| [l(o[0].to_sym), o[1]] }
+  end
+
+
+    #######
+
 
   def column_content_with_chiliproject(column, queryable)
     value = column.value(queryable)

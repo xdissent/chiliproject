@@ -7,15 +7,41 @@ class Query < QueryableQuery
   belongs_to :project
   belongs_to :user
 
-  # Translate captions
+  # Override operators for translation
+  self.operators = {
+    "="   => :label_equals,
+    "!"   => :label_not_equals,
+    "!*"  => :label_none,
+    "*"   => :label_all,
+    ">="  => :label_greater_or_equal,
+    "<="  => :label_less_or_equal,
+    "><"  => :label_between,
+    "<t+" => :label_in_less_than,
+    ">t+" => :label_in_more_than,
+    "t+"  => :label_in,
+    "t"   => :label_today,
+    "w"   => :label_this_week,
+    ">t-" => :label_less_than_ago,
+    "<t-" => :label_more_than_ago,
+    "t-"  => :label_ago,
+    "~"   => :label_contains,
+    "!~"  => :label_not_contains
+  }
+
+  # Force captions on all query columns.
   def eval_class_columns
-    self.class.available_columns.map { |c| QueryColumn.new c[:name], c.merge({:caption => l(c[:caption] || "field_#{c[:name]}")}) }
+    Hash.new[self.class.available_columns.map { |n, c| QueryColumn.new n.to_sym, c.merge(:caption => (c[:caption] || c[:name])) }]
   end
 
-  # Translate filter labels
-  def label_for(field)
-    label = available_filters[field][:name] if available_filters.has_key?(field)
-    label ||= l("field_#{field.to_s.gsub(/\_id$/, "")}".to_sym)
+  # Translate error labels
+  def validate
+    filters.each_key do |field|
+      errors.add l(label_for(field)), :blank unless
+          # filter requires one or more values
+          !field_blank?(field) ||
+          # filter doesn't require any value
+          field_blank_allowed?(field)
+    end if filters
   end
 
   def initialize(attributes = nil)

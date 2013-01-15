@@ -6,7 +6,7 @@ class IssueQuery < Query
 
   def initialize(attributes = nil)
     super
-    self.filters ||= { 'status_id' => {:operator => "o", :values => [""]} }
+    self.filters ||= { :status_id => {:operator => "o", :values => [""]} }
   end
 
   def available_columns
