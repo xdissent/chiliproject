@@ -15,24 +15,24 @@
 module IssueQueriesHelper
   include QueriesHelper
 
-  def column_content_with_issues(column, queryable)
-    value = column.value(queryable)
-    case value.class.name
-    when 'String'
-      if column.name == :subject
-        link_to(h(value), :controller => 'issues', :action => 'show', :id => queryable)
-      else
-        column_content_without_issues(column, queryable)
-      end
-    when 'Fixnum', 'Float'
-      if column.name == :done_ratio
-        progress_bar(value, :width => '80px')
-      else
-        column_content_without_issues(column, queryable)
-      end
-    else
-      column_content_without_issues(column, queryable)
-    end
-  end
-  alias_method_chain :column_content, :issues
+  # def column_content_with_issues(column, queryable)
+  #   value = column.value(queryable)
+  #   case value.class.name
+  #   when 'String'
+  #     if column.name == :subject
+  #       link_to(h(value), :controller => 'issues', :action => 'show', :id => queryable)
+  #     else
+  #       column_content_without_issues(column, queryable)
+  #     end
+  #   when 'Fixnum', 'Float'
+  #     if column.name == :done_ratio
+  #       progress_bar(value, :width => '80px')
+  #     else
+  #       column_content_without_issues(column, queryable)
+  #     end
+  #   else
+  #     column_content_without_issues(column, queryable)
+  #   end
+  # end
+  # alias_method_chain :column_content, :issues
 end

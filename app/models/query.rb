@@ -7,10 +7,26 @@ class Query < QueryableQuery
   belongs_to :project
   belongs_to :user
 
-  # Translate captions
-  def eval_class_columns
-    self.class.available_columns.map { |c| QueryColumn.new c[:name], c.merge({:caption => l(c[:caption] || "field_#{c[:name]}")}) }
-  end
+  # Override operators for translation
+  self.operators = {
+    "="   => :label_equals,
+    "!"   => :label_not_equals,
+    "!*"  => :label_none,
+    "*"   => :label_all,
+    ">="  => :label_greater_or_equal,
+    "<="  => :label_less_or_equal,
+    "><"  => :label_between,
+    "<t+" => :label_in_less_than,
+    ">t+" => :label_in_more_than,
+    "t+"  => :label_in,
+    "t"   => :label_today,
+    "w"   => :label_this_week,
+    ">t-" => :label_less_than_ago,
+    "<t-" => :label_more_than_ago,
+    "t-"  => :label_ago,
+    "~"   => :label_contains,
+    "!~"  => :label_not_contains
+  }
 
   def initialize(attributes = nil)
     super attributes
@@ -41,15 +57,40 @@ class Query < QueryableQuery
     @user_values
   end
 
+  def to_sql
+    [super, project_statement].reject { |s| s.blank? }.join(' AND ')
+  end
+
+  def label_for(name, options={})
+    l("field_#{name}".to_sym)
+    # I18n.t(name, {:default => name.to_s.titleize}.merge(options))
+  end
+
+  def filter_label_for(name)
+    filter_for(name)[:label] || l("field_#{name}".gsub(/_id$/, '').to_sym)
+  end
+
+private
+
+  def sql_for(name, operator=nil, values=nil, table=nil, field=nil, type=nil)
+    return nil if name == :subproject_id
+    return super unless operator_for(name) == "w"
+    # Override day of week to start with day in settings.
+    first_day_of_week = l(:general_first_day_of_week).to_i
+    day_of_week = Date.today.cwday
+    days_ago = (day_of_week >= first_day_of_week ? day_of_week - first_day_of_week : day_of_week + 7 - first_day_of_week)
+    relative_date_clause((table || queryable_class.table_name), (field || name), - days_ago, - days_ago + 6)
+  end
+
   def project_statement
     project_clauses = []
     if project && !@project.descendants.active.empty?
       ids = [project.id]
-      if has_filter?("subproject_id")
-        case operator_for("subproject_id")
+      if has_filter?(:subproject_id)
+        case operator_for(:subproject_id)
         when '='
           # include the selected subprojects
-          ids += values_for("subproject_id").each(&:to_i)
+          ids += values_for(:subproject_id).each(&:to_i)
         when '!*'
           # main project only
         else
@@ -64,14 +105,5 @@ class Query < QueryableQuery
       project_clauses << "#{Project.table_name}.id = %d" % project.id
     end
     project_clauses.join(' AND ')
-  end
-
-  def field_statement(field)
-    return nil if field == "subproject_id"
-    super
-  end
-
-  def statement
-    [super, project_statement].reject { |s| s.blank? }.join(' AND ')
   end
 end
