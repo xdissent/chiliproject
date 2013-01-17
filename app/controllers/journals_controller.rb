@@ -15,7 +15,6 @@
 require 'diff'
 
 class JournalsController < ApplicationController
-  before_filter :find_query_object, :only => [:index]
   before_filter :find_journal, :only => [:edit, :diff]
   before_filter :find_issue, :only => [:new]
   before_filter :find_optional_project, :only => [:index]

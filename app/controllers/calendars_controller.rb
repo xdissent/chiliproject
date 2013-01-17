@@ -15,8 +15,6 @@
 class CalendarsController < ApplicationController
   menu_item :calendar
 
-  before_filter :find_query_object
-
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
 
   include IssueQueriesHelper
@@ -38,7 +36,7 @@ class CalendarsController < ApplicationController
     @query.group_by = nil
     if @query.valid?
       events = []
-      events += @query.issues(:include => [:tracker, :assigned_to, :priority],
+      events += @query.query(:include => [:tracker, :assigned_to, :priority],
                               :conditions => ["((#{Issue.table_name}.start_date BETWEEN ? AND ?) OR (#{Issue.table_name}.due_date BETWEEN ? AND ?))", @calendar.startdt, @calendar.enddt, @calendar.startdt, @calendar.enddt]
                               )
       events += @query.versions(:conditions => ["#{Version.table_name}.effective_date BETWEEN ? AND ?", @calendar.startdt, @calendar.enddt])

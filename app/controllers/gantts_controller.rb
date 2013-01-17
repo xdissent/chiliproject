@@ -14,7 +14,6 @@
 
 class GanttsController < ApplicationController
   menu_item :gantt
-  before_filter :find_query_object
 
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
 
