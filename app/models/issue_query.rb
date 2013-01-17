@@ -196,68 +196,25 @@ class IssueQuery < Query
     r.keys.inject({}) { |h, k| h[cf.cast_value(k)] = r[k]; h }
   end
 
+  # Returns the versions
+  # Valid options are :conditions
+  def versions(options={})
+    Version.find :all, :include => :project,
+                       :conditions => self.class.merge_conditions(project_statement, options[:conditions])
+  rescue ::ActiveRecord::StatementInvalid => e
+    raise Query::StatementInvalid.new(e.message)
+  end
 
+  # Returns the journals
+  # Valid options are :order, :offset, :limit
+  def issue_journals(options={})
+    IssueJournal.find :all, :joins => [:user, {:issue => [:project, :author, :tracker, :status]}],
+                       :conditions => to_sql,
+                       :order => options[:order],
+                       :limit => options[:limit],
+                       :offset => options[:offset]
+  rescue ::ActiveRecord::StatementInvalid => e
+    raise Query::StatementInvalid.new(e.message)
+  end
 
-  # # Returns the issue count
-  # def issue_count
-  #   Issue.count(:include => [:status, :project], :conditions => statement)
-  # rescue ::ActiveRecord::StatementInvalid => e
-  #   raise Query::StatementInvalid.new(e.message)
-  # end
-
-  # # Returns the issue count by group or nil if query is not grouped
-  # def issue_count_by_group
-  #   r = nil
-  #   if grouped?
-  #     begin
-  #       # Rails will raise an (unexpected) RecordNotFound if there's only a nil group value
-  #       r = Issue.count(:group => group_by_statement, :include => [:status, :project], :conditions => statement)
-  #     rescue ActiveRecord::RecordNotFound
-  #       r = {nil => issue_count}
-  #     end
-  #     c = group_by_column
-  #     if c.is_a?(QueryCustomFieldColumn)
-  #       r = r.keys.inject({}) {|h, k| h[c.custom_field.cast_value(k)] = r[k]; h}
-  #     end
-  #   end
-  #   r
-  # rescue ::ActiveRecord::StatementInvalid => e
-  #   raise Query::StatementInvalid.new(e.message)
-  # end
-
-  # # Returns the issues
-  # # Valid options are :order, :offset, :limit, :include, :conditions
-  # def issues(options={})
-  #   order_option = [group_by_sort_order, options[:order]].reject {|s| s.blank?}.join(',')
-  #   order_option = nil if order_option.blank?
-
-  #   Issue.find :all, :include => ([:status, :project] + (options[:include] || [])).uniq,
-  #                    :conditions => self.class.merge_conditions(statement, options[:conditions]),
-  #                    :order => order_option,
-  #                    :limit  => options[:limit],
-  #                    :offset => options[:offset]
-  # rescue ::ActiveRecord::StatementInvalid => e
-  #   raise Query::StatementInvalid.new(e.message)
-  # end
-
-  # # Returns the journals
-  # # Valid options are :order, :offset, :limit
-  # def issue_journals(options={})
-  #   IssueJournal.find :all, :joins => [:user, {:issue => [:project, :author, :tracker, :status]}],
-  #                      :conditions => statement,
-  #                      :order => options[:order],
-  #                      :limit => options[:limit],
-  #                      :offset => options[:offset]
-  # rescue ::ActiveRecord::StatementInvalid => e
-  #   raise Query::StatementInvalid.new(e.message)
-  # end
-
-  # # Returns the versions
-  # # Valid options are :conditions
-  # def versions(options={})
-  #   Version.find :all, :include => :project,
-  #                      :conditions => self.class.merge_conditions(project_statement, options[:conditions])
-  # rescue ::ActiveRecord::StatementInvalid => e
-  #   raise Query::StatementInvalid.new(e.message)
-  # end
 end

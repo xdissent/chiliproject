@@ -129,7 +129,7 @@ class IssuesControllerTest < ActionController::TestCase
     query = assigns(:query)
     assert_not_nil query
     # default filter
-    assert_equal({'status_id' => {:operator => 'o', :values => ['']}}, query.filters)
+    assert_equal({:status_id => {:operator => 'o', :values => ['']}}, query.filters)
   end
 
   def test_index_with_project_and_filter
@@ -143,7 +143,7 @@ class IssuesControllerTest < ActionController::TestCase
 
     query = assigns(:query)
     assert_not_nil query
-    assert_equal({'tracker_id' => {:operator => '=', :values => ['1']}}, query.filters)
+    assert_equal({:tracker_id => {:operator => '=', :values => ['1']}}, query.filters)
   end
 
   def test_index_with_project_and_empty_filters
@@ -249,12 +249,12 @@ class IssuesControllerTest < ActionController::TestCase
     # query should use specified columns
     query = assigns(:query)
     assert_kind_of IssueQuery, query
-    assert_equal columns, query.column_names.map(&:to_s)
+    assert_equal columns, query.columns.map(&:to_s)
 
     # columns should be stored in session
     assert_kind_of Hash, session[:query_issue_query]
-    assert_kind_of Array, session[:query_issue_query][:column_names]
-    assert_equal columns, session[:query_issue_query][:column_names].map(&:to_s)
+    assert_kind_of Array, session[:query_issue_query][:columns]
+    assert_equal columns, session[:query_issue_query][:columns].map(&:to_s)
   end
 
   def test_show_by_anonymous

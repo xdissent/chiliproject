@@ -204,7 +204,7 @@ module Redmine
         col_width = []
         unless query.columns.empty?
           col_width = query.columns.collect do |c|
-            (c.name == :subject || (c.is_a?(QueryCustomFieldColumn) && ['string', 'text'].include?(c.custom_field.field_format)))? 4.0 : 1.0
+            (c == :subject || (query.filter_for(c)[:custom_field] && ['string', 'text'].include?(query.format_for(c)))) ? 4.0 : 1.0
           end
           ratio = (table_width - col_id_width) / col_width.inject(0) {|s,w| s += w}
           col_width = col_width.collect {|w| w * ratio}
@@ -220,7 +220,7 @@ module Redmine
         pdf.SetFillColor(230, 230, 230)
         pdf.RDMCell(col_id_width, row_height, "#", 1, 0, 'L', 1)
         query.columns.each_with_index do |column, i|
-          pdf.RDMCell(col_width[i], row_height, column.caption, 1, 0, 'L', 1)
+          pdf.RDMCell(col_width[i], row_height, query.column_label_for(column), 1, 0, 'L', 1)
         end
         pdf.Ln
 
@@ -229,10 +229,16 @@ module Redmine
         pdf.SetFillColor(255, 255, 255)
         previous_group = false
         issues.each do |issue|
-          if query.grouped? && (group = query.group_by_column.value(issue)) != previous_group
+          cv = nil
+          if (cf = query.filter_for(query.group_by)[:custom_field])
+            cv = issue.custom_values.detect {|v| v.custom_field_id == cf.id}
+            cv = cf.cast_value(cv.value) if cv
+          end
+
+          if query.grouped? && (group = cv) != previous_group
             pdf.SetFontStyle('B',9)
             pdf.RDMCell(277, row_height,
-              (group.blank? ? 'None' : group.to_s) + " (#{query.issue_count_by_group[group]})",
+              (group.blank? ? 'None' : group.to_s) + " (#{query.count_by_group[group]})",
               1, 1, 'L')
             pdf.SetFontStyle('',8)
             previous_group = group
@@ -240,11 +246,10 @@ module Redmine
 
           # fetch all the row values
           col_values = query.columns.collect do |column|
-            s = if column.is_a?(QueryCustomFieldColumn)
-              cv = issue.custom_values.detect {|v| v.custom_field_id == column.custom_field.id}
+            s = if cv && cf
               show_value(cv)
             else
-              value = issue.send(column.name)
+              value = issue.send(column)
               if value.is_a?(Date)
                 format_date(value)
               elsif value.is_a?(Time)
