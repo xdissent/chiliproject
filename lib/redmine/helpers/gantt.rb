@@ -132,8 +132,8 @@ module Redmine
 
       # Returns issues that will be rendered
       def issues
-        @issues ||= @query.issues(
-          :include => [:assigned_to, :tracker, :priority, :category, :fixed_version],
+        @issues ||= @query.query(
+          :include => [:project, :assigned_to, :tracker, :priority, :category, :fixed_version],
           :order => "#{Project.table_name}.lft ASC, #{Issue.table_name}.id ASC",
           :limit => @max_rows
         )
