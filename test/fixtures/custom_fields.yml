@@ -30,6 +30,7 @@ custom_fields_002:
   searchable: true
   default_value: "Default string"
   editable: true
+  is_filter: true
 custom_fields_003:
   name: Development status
   min_length: 0
@@ -79,6 +80,7 @@ custom_fields_006:
   min_length: 0
   regexp: ""
   is_for_all: true
+  is_filter: true
   type: IssueCustomField
   max_length: 0
   possible_values: ""
@@ -106,7 +108,7 @@ custom_fields_008:
   min_length: 0
   regexp: ""
   is_for_all: true
-  is_filter: false
+  is_filter: true
   type: IssueCustomField
   max_length: 0
   possible_values: ""

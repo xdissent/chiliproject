@@ -14,7 +14,7 @@
 
 class CalendarsController < ApplicationController
   menu_item :calendar
-  before_filter :find_optional_project
+
   before_filter :find_query_object
 
   rescue_from Query::StatementInvalid, :with => :query_statement_invalid
@@ -22,7 +22,7 @@ class CalendarsController < ApplicationController
   include IssueQueriesHelper
   include SortHelper
 
-  query_class IssueQuery
+  queryable Issue
 
   def show
     if params[:year] and params[:year].to_i > 1900

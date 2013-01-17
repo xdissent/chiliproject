@@ -26,7 +26,7 @@ class JournalsController < ApplicationController
   include IssueQueriesHelper
   include SortHelper
 
-  query_class IssueQuery
+  queryable Issue
 
   def index
     sort_init 'id', 'desc'

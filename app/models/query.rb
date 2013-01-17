@@ -62,12 +62,15 @@ class Query < QueryableQuery
   end
 
   def label_for(name, options={})
-    l("field_#{name}".to_sym)
-    # I18n.t(name, {:default => name.to_s.titleize}.merge(options))
+    l(name, {:default => name.to_s.titleize}.merge(options))
+  end
+
+  def column_label_for(name)
+    column_for(name)[:label] || l("field_#{name}".to_sym, :default => label_for(name))
   end
 
   def filter_label_for(name)
-    filter_for(name)[:label] || l("field_#{name}".gsub(/_id$/, '').to_sym)
+    filter_for(name)[:label] || l("field_#{name}".gsub(/_id$/, '').to_sym, :default => label_for(name))
   end
 
 private

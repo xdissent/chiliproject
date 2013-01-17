@@ -51,11 +51,10 @@ class IssueQuery < Query
   end
 
   def format_for(name)
-    (cf = filter_for(name)[:custom_field]) && cf.field_format
+    filter_for(name)[:format]
   end
 
   def sql_for(name, operator=nil, values=nil, table=nil, field=nil, type=nil)
-    Rails.logger.info "FILTERING BY NAME: #{name} #{name.class}"
 
     values ||= values_for(name).clone
     table ||= queryable_class.table_name
@@ -126,13 +125,12 @@ class IssueQuery < Query
       return sql_for :assigned_to_id, operator, members_of_roles
 
     when :status_id
-      Rails.logger.info "FILTERING BY STATUS"
       return "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if operator == "o"
       return "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if operator == "c"
 
     else
       # custom field
-      if !values_blank?(name, values) && (cf = filter_for(name)[:custom_field])
+      if (cf = filter_for(name)[:custom_field]) # && !values_blank?(name, values)
         sql = sql_for :value, operator, values, CustomValue.table_name
 
         case operator
@@ -147,7 +145,7 @@ class IssueQuery < Query
         when "<>"
           sql = "CAST(#{CustomValue.table_name}.value AS decimal(60,3)) BETWEEN #{values[0].to_i} AND #{values[1].to_i}"
         end
-        return "#{table}.id IN (SELECT #{table}.id FROM #{table} LEFT OUTER JOIN #{CustomValue.table_name} ON #{CustomValue.table_name}.customized_type='queryable_class.name' AND #{CustomValue.table_name}.customized_id=#{table}.id AND #{CustomValue.table_name}.custom_field_id=#{cf.id} WHERE #{sql})"
+        return "#{table}.id IN (SELECT #{table}.id FROM #{table} LEFT OUTER JOIN #{CustomValue.table_name} ON #{CustomValue.table_name}.customized_type='#{queryable_class.name}' AND #{CustomValue.table_name}.customized_id=#{table}.id AND #{CustomValue.table_name}.custom_field_id=#{cf.id} WHERE #{sql})"
       end
     end
 
@@ -191,10 +189,10 @@ class IssueQuery < Query
     end.compact]
   end
 
-
   def count_by_group(options={})
+    return super unless grouped? && (cf = filter_for(group_by)[:custom_field])
+    options[:include] ||= []
     r = super
-    return r unless grouped? && (cf = filter_for(group_by)[:custom_field])
     r.keys.inject({}) { |h, k| h[cf.cast_value(k)] = r[k]; h }
   end
 
