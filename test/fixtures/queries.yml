@@ -20,7 +20,7 @@ queries_001:
       :operator: "="
 
   user_id: 1
-  column_names:
+  columns:
   type: IssueQuery
 queries_002:
   id: 2
@@ -39,7 +39,7 @@ queries_002:
       :operator: o
 
   user_id: 3
-  column_names:
+  columns:
   type: IssueQuery
 queries_003:
   id: 3
@@ -54,7 +54,7 @@ queries_003:
       :operator: "="
 
   user_id: 3
-  column_names:
+  columns:
   type: IssueQuery
 queries_004:
   id: 4
@@ -69,7 +69,7 @@ queries_004:
       :operator: "="
 
   user_id: 2
-  column_names:
+  columns:
   type: IssueQuery
 queries_005:
   id: 5
@@ -84,7 +84,7 @@ queries_005:
       :operator: o
 
   user_id: 1
-  column_names:
+  columns:
   sort_criteria: |
     ---
     - - priority
@@ -105,7 +105,7 @@ queries_006:
       :operator: o
 
   user_id: 1
-  column_names:
+  columns:
   group_by: tracker
   sort_criteria: |
     ---
@@ -125,7 +125,7 @@ queries_007:
       :operator: "="
 
   user_id: 2
-  column_names:
+  columns:
   type: IssueQuery
 queries_008:
   id: 8
@@ -140,7 +140,7 @@ queries_008:
       :operator: "="
 
   user_id: 2
-  column_names:
+  columns:
   type: IssueQuery
 queries_009:
   id: 9
@@ -155,7 +155,7 @@ queries_009:
       :operator: o
 
   user_id: 1
-  column_names:
+  columns:
   group_by: cf_1
   sort_criteria: |
     ---
