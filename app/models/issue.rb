@@ -48,7 +48,7 @@ class Issue < ActiveRecord::Base
                                                 t }
 
   acts_as_queryable :columns => {
-      :project => {:sortable => "#{Project.table_name}.name", :groupable => true},
+      :project => {:sortable => "#{Project.table_name}.name", :groupable => "#{::Issue.table_name}.project_id"},
       :tracker => {:sortable => "#{Tracker.table_name}.position", :groupable => true},
       :parent => {:sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue},
       :status => {:sortable => "#{IssueStatus.table_name}.position", :groupable => true},
@@ -72,9 +72,9 @@ class Issue < ActiveRecord::Base
       :list_status => [ "o", "=", "!", "c", "*" ], 
       :list_subprojects => [ "*", "!*", "=" ]
     }, :filters => {
-      :status_id => {:type => :list_status, :order => 1, :values => lambda { |q| IssueStatus.find(:all, :order => 'position').collect{ |s| [s.name, s.id.to_s] } }},
-      :tracker_id => {:type => :list, :order => 2, :values => lambda { |q| (q.project.nil? ? Tracker.find(:all, :order => 'position') : q.project.rolled_up_trackers).collect { |s| [s.name, s.id.to_s] } }},
-      :priority_id => {:type => :list, :order => 3, :values => lambda { |q| IssuePriority.all.collect{ |s| [s.name, s.id.to_s] } }},
+      :status_id => {:type => :list_status, :order => 1, :choices => lambda { |q| IssueStatus.find(:all, :order => 'position').collect{ |s| [s.name, s.id.to_s] } }},
+      :tracker_id => {:type => :list, :order => 2, :choices => lambda { |q| (q.project.nil? ? Tracker.find(:all, :order => 'position') : q.project.rolled_up_trackers).collect { |s| [s.name, s.id.to_s] } }},
+      :priority_id => {:type => :list, :order => 3, :choices => lambda { |q| IssuePriority.all.collect{ |s| [s.name, s.id.to_s] } }},
       :subject => {:type => :text, :order => 8},
       :created_on => {:type => :date_past, :order => 9},
       :updated_on => {:type => :date_past, :order => 10},
@@ -82,15 +82,15 @@ class Issue < ActiveRecord::Base
       :due_date => {:type => :date, :order => 12},
       :estimated_hours => {:type => :integer, :order => 13},
       :done_ratio =>  {:type => :integer, :order => 14},
-      :assigned_to_id => {:type => :list_optional, :order => 4, :values => lambda { |q| q.user_values }, :if => lambda { |q| !q.user_values.empty? }},
-      :author_id => {:type => :list, :order => 5, :values => lambda { |q| q.user_values }, :if => lambda { |q| !q.user_values.empty? }},
-      :member_of_group => {:type => :list_optional, :order => 6, :values => lambda { |q| Group.all.collect { |g| [g.name, g.id.to_s] } }, :if => lambda { |q| !Group.all.empty? }},
-      :assigned_to_role => {:type => :list_optional, :order => 7, :values => lambda { |q| Role.givable.collect { |r| [r.name, r.id.to_s] } }, :if => lambda { |q| !Role.givable.collect { |r| [r.name, r.id.to_s] }.empty? }},
-      :watcher_id => {:type => :list, :order => 15, :values => lambda { |q| User.current.allowed_to_globally?(:view_issue_watchers, {}) ? q.user_values : [["<< #{l(:label_me)} >>", "me"]] }, :if => lambda { |q| User.current.logged? }},
-      :category_id => {:type => :list_optional, :order => 6, :values => lambda { |q| q.project.issue_categories.all.collect{|s| [s.name, s.id.to_s] } }, :if => lambda { |q| q.project && !q.project.issue_categories.all.empty? }},
-      :fixed_version_id => {:type => :list_optional, :order => 7, :values => lambda { |q| (q.project ? q.project.shared_versions.all : Version.visible.find_all_by_sharing('system')).sort.collect { |s| ["#{s.project.name} - #{s.name}", s.id.to_s] } }, :if => lambda { |q| (q.project && !q.project.shared_versions.all.empty?) || (!q.project && !Version.visible.find_all_by_sharing('system').empty?) }},
-      :subproject_id => {:type => :list_subprojects, :order => 13, :values => lambda { |q| q.project.descendants.visible.all.collect{ |s| [s.name, s.id.to_s] } }, :if => lambda { |q| q.project && !q.project.leaf? && !q.project.descendants.visible.all.empty? }},
-      :project_id => {:type => :list, :order => 1, :values => lambda { |q| vs = []; Project.project_tree(Project.visible.all) { |p, l| vs << ["#{(l > 0 ? ('--' * l + ' ') : '')}#{p.name}", p.id.to_s] }; vs }, :if => lambda { |q| !q.project && !Project.visible.all.empty? }}
+      :assigned_to_id => {:type => :list_optional, :order => 4, :choices => lambda { |q| q.user_values }, :if => lambda { |q| !q.user_values.empty? }},
+      :author_id => {:type => :list, :order => 5, :choices => lambda { |q| q.user_values }, :if => lambda { |q| !q.user_values.empty? }},
+      :member_of_group => {:type => :list_optional, :order => 6, :choices => lambda { |q| Group.all.collect { |g| [g.name, g.id.to_s] } }, :if => lambda { |q| !Group.all.empty? }},
+      :assigned_to_role => {:type => :list_optional, :order => 7, :choices => lambda { |q| Role.givable.collect { |r| [r.name, r.id.to_s] } }, :if => lambda { |q| !Role.givable.collect { |r| [r.name, r.id.to_s] }.empty? }},
+      :watcher_id => {:type => :list, :order => 15, :choices => lambda { |q| User.current.allowed_to_globally?(:view_issue_watchers, {}) ? q.user_values : [["<< #{l(:label_me)} >>", "me"]] }, :if => lambda { |q| User.current.logged? }},
+      :category_id => {:type => :list_optional, :order => 6, :choices => lambda { |q| q.project.issue_categories.all.collect{|s| [s.name, s.id.to_s] } }, :if => lambda { |q| q.project && !q.project.issue_categories.all.empty? }},
+      :fixed_version_id => {:type => :list_optional, :order => 7, :choices => lambda { |q| (q.project ? q.project.shared_versions.all : Version.visible.find_all_by_sharing('system')).sort.collect { |s| ["#{s.project.name} - #{s.name}", s.id.to_s] } }, :if => lambda { |q| (q.project && !q.project.shared_versions.all.empty?) || (!q.project && !Version.visible.find_all_by_sharing('system').empty?) }},
+      :subproject_id => {:type => :list_subprojects, :order => 13, :choices => lambda { |q| q.project.descendants.visible.all.collect{ |s| [s.name, s.id.to_s] } }, :if => lambda { |q| q.project && !q.project.leaf? && !q.project.descendants.visible.all.empty? }},
+      :project_id => {:type => :list, :order => 1, :choices => lambda { |q| vs = []; Project.project_tree(Project.visible.all) { |p, l| vs << ["#{(l > 0 ? ('--' * l + ' ') : '')}#{p.name}", p.id.to_s] }; vs }, :if => lambda { |q| !q.project && !Project.visible.all.empty? }}
     }
 
   register_on_journal_formatter(:id, 'parent_id')

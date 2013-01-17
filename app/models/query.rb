@@ -28,22 +28,6 @@ class Query < QueryableQuery
     "!~"  => :label_not_contains
   }
 
-  # Force captions on all query columns.
-  def eval_class_columns
-    Hash.new[self.class.available_columns.map { |n, c| QueryColumn.new n.to_sym, c.merge(:caption => (c[:caption] || c[:name])) }]
-  end
-
-  # Translate error labels
-  def validate
-    filters.each_key do |field|
-      errors.add l(label_for(field)), :blank unless
-          # filter requires one or more values
-          !field_blank?(field) ||
-          # filter doesn't require any value
-          field_blank_allowed?(field)
-    end if filters
-  end
-
   def initialize(attributes = nil)
     super attributes
     self.display_subprojects ||= Setting.display_subprojects_issues?
@@ -73,15 +57,40 @@ class Query < QueryableQuery
     @user_values
   end
 
+  def to_sql
+    [super, project_statement].reject { |s| s.blank? }.join(' AND ')
+  end
+
+  def label_for(name, options={})
+    l("field_#{name}".to_sym)
+    # I18n.t(name, {:default => name.to_s.titleize}.merge(options))
+  end
+
+  def filter_label_for(name)
+    filter_for(name)[:label] || l("field_#{name}".gsub(/_id$/, '').to_sym)
+  end
+
+private
+
+  def sql_for(name, operator=nil, values=nil, table=nil, field=nil, type=nil)
+    return nil if name == :subproject_id
+    return super unless operator_for(name) == "w"
+    # Override day of week to start with day in settings.
+    first_day_of_week = l(:general_first_day_of_week).to_i
+    day_of_week = Date.today.cwday
+    days_ago = (day_of_week >= first_day_of_week ? day_of_week - first_day_of_week : day_of_week + 7 - first_day_of_week)
+    relative_date_clause((table || queryable_class.table_name), (field || name), - days_ago, - days_ago + 6)
+  end
+
   def project_statement
     project_clauses = []
     if project && !@project.descendants.active.empty?
       ids = [project.id]
-      if has_filter?("subproject_id")
-        case operator_for("subproject_id")
+      if has_filter?(:subproject_id)
+        case operator_for(:subproject_id)
         when '='
           # include the selected subprojects
-          ids += values_for("subproject_id").each(&:to_i)
+          ids += values_for(:subproject_id).each(&:to_i)
         when '!*'
           # main project only
         else
@@ -96,28 +105,5 @@ class Query < QueryableQuery
       project_clauses << "#{Project.table_name}.id = %d" % project.id
     end
     project_clauses.join(' AND ')
-  end
-
-  def field_statement(field)
-    return nil if field == "subproject_id"
-    super
-  end
-
-  def statement
-    [super, project_statement].reject { |s| s.blank? }.join(' AND ')
-  end
-
-  # Override day of week to start with day in settings.
-  def sql_for_field(field, operator=nil, value=nil, db_table=nil, db_field=nil, is_custom_filter=false)
-    if (operator || operator_for(field)) == "w"
-      db_table ||= queryable_class.table_name
-      db_field ||= field
-      first_day_of_week = l(:general_first_day_of_week).to_i
-      day_of_week = Date.today.cwday
-      days_ago = (day_of_week >= first_day_of_week ? day_of_week - first_day_of_week : day_of_week + 7 - first_day_of_week)
-      relative_date_clause(db_table, db_field, - days_ago, - days_ago + 6)
-    else
-      super
-    end
   end
 end
