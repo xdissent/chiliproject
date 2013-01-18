@@ -57,6 +57,13 @@ class Query < QueryableQuery
     @user_values
   end
 
+  def sort_helper
+    @query.sortable_columns.inject({}) do |h, name|
+      h[name.to_s] = @query.sortable_for(name)
+      h
+    end
+  end
+
   def to_sql
     [super, project_statement].reject { |s| s.blank? }.join(' AND ')
   end
