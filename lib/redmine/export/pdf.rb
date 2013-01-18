@@ -204,7 +204,7 @@ module Redmine
         col_width = []
         unless query.columns.empty?
           col_width = query.columns.collect do |c|
-            (c == :subject || (query.filter_for(c)[:custom_field] && ['string', 'text'].include?(query.format_for(c)))) ? 4.0 : 1.0
+            (c == :subject || (query.filter_custom?(c) && ['string', 'text'].include?(query.format_for(c)))) ? 4.0 : 1.0
           end
           ratio = (table_width - col_id_width) / col_width.inject(0) {|s,w| s += w}
           col_width = col_width.collect {|w| w * ratio}
@@ -229,36 +229,37 @@ module Redmine
         pdf.SetFillColor(255, 255, 255)
         previous_group = false
         issues.each do |issue|
-          cv = nil
-          if (cf = query.filter_for(query.group_by)[:custom_field])
-            cv = issue.custom_values.detect {|v| v.custom_field_id == cf.id}
-            cv = cf.cast_value(cv.value) if cv
-          end
-
-          if query.grouped? && (group = cv) != previous_group
-            pdf.SetFontStyle('B',9)
-            pdf.RDMCell(277, row_height,
-              (group.blank? ? 'None' : group.to_s) + " (#{query.count_by_group[group]})",
-              1, 1, 'L')
-            pdf.SetFontStyle('',8)
-            previous_group = group
+          if query.grouped?
+            if query.filter_custom?(query.group_by)
+              group = query.custom_value_for(group_by, issue)
+            else
+              group = issue.try(query.group_by)
+            end
+            if != previous_group
+              pdf.SetFontStyle('B',9)
+              pdf.RDMCell(277, row_height,
+                (group.blank? ? 'None' : group.to_s) + " (#{query.issue_count_by_group[group]})",
+                1, 1, 'L')
+              pdf.SetFontStyle('',8)
+              previous_group = group
+            end
           end
 
           # fetch all the row values
           col_values = query.columns.collect do |column|
-            s = if cv && cf
-              show_value(cv)
+            if query.filter_custom?(column)
+              value = query.custom_value_for(column, issue)
             else
-              value = issue.send(column)
-              if value.is_a?(Date)
-                format_date(value)
-              elsif value.is_a?(Time)
-                format_time(value)
-              else
-                value
-              end
-                end
-            s.to_s
+              value = issue.try(column)
+            end
+            
+            if value.is_a?(Date)
+              format_date(value)
+            elsif value.is_a?(Time)
+              format_time(value)
+            else
+              value.to_s
+            end
           end
 
           # render it off-page to find the max height used
