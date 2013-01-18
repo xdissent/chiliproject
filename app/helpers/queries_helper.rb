@@ -110,7 +110,7 @@ module QueriesHelper
 
     if !params[:query_id].blank?
       super
-      render_404 unless @query && @query.project_id == @project.id
+      render_404 unless @query && @project && @query.project_id == @project.id
       session[query_session_key][:project_id] = @query.project_id
       sort_clear
     else
