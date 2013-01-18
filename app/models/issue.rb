@@ -50,7 +50,7 @@ class Issue < ActiveRecord::Base
   acts_as_queryable :columns => {
       :project => {:sortable => "#{Project.table_name}.name", :groupable => "#{::Issue.table_name}.project_id"},
       :tracker => {:sortable => "#{Tracker.table_name}.position", :groupable => true},
-      :parent => {:sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue},
+      :parent => {:sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :label => l(:field_parent_issue)},
       :status => {:sortable => "#{IssueStatus.table_name}.position", :groupable => true},
       :priority => {:sortable => "#{IssuePriority.table_name}.position", :default_order => 'desc', :groupable => true},
       :subject => {:sortable => "#{::Issue.table_name}.subject"},

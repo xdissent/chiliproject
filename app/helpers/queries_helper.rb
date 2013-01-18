@@ -49,11 +49,11 @@ module QueriesHelper
   end
 
   def query_columns_available_label(query=nil)
-    label_tag "available_columns", l(:description_available_columns), :class => "hidden-for-sighted"
+    label_tag "available_columns", l(:description_available_columns)
   end
 
   def query_columns_selected_label(query=nil)
-    label_tag "selected_columns", l(:description_selected_columns), :class => "hidden-for-sighted"
+    label_tag "selected_columns", l(:description_selected_columns)
   end
 
   def query_filter_operator_label(field, query=nil)
@@ -77,11 +77,21 @@ module QueriesHelper
   end
 
   def query_filter_add_label(query=nil)
-    label_tag "add_filter_select", l(:label_filter_add)
+    label_tag("add_filter_select", (l(:label_filter_add) + ":"))
   end
 
   def query_group_by_label(query=nil)
     label_tag "group_by", l(:field_group_by)
+  end
+
+  def query_columns_available_buttons
+    (content_tag(:button, "&#8594;", :type => :button, :onclick => "moveOptions(this.form.available_columns, this.form.selected_columns); return false;") + "<br>" +
+      content_tag(:button, "&#8592;", :onclick => "moveOptions(this.form.selected_columns, this.form.available_columns); return false;"))
+  end
+
+  def query_columns_selected_buttons
+    (content_tag(:button, "&#8593;", :onclick => "moveOptionUp(this.form.selected_columns); return false;") + "<br>" +
+      content_tag(:button, "&#8595;", :onclick => "moveOptionDown(this.form.selected_columns); return false;"))
   end
 
   def query_apply_button(query=nil, options={})
