@@ -35,6 +35,19 @@ module QueriesHelper
     nil
   end
 
+  def query_list_headers(query=nil)
+    query ||= @query
+    query.columns.map do |name|
+      if (s = query.sortable_for(name))
+        sort_header_tag name.to_s, 
+          :caption => query.column_label_for(name),
+          :default_order => query.default_order_for(name) 
+      else
+        content_tag :th, query.column_label_for(name)
+      end
+    end.join("")
+  end
+
   def query_columns_available_label(query=nil)
     label_tag "available_columns", l(:description_available_columns), :class => "hidden-for-sighted"
   end
