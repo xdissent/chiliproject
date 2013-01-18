@@ -68,7 +68,7 @@ class QueriesControllerTest < ActionController::TestCase
     q = Query.find_by_name('test_new_project_public_query')
     assert_redirected_to :controller => 'issues', :action => 'index', :project_id => 'ecookbook', :query_id => q
     assert q.is_public?
-    assert_equal q.default_columns, q.columns
+    assert q.has_default_columns?
     assert q.valid?
   end
 
@@ -86,7 +86,7 @@ class QueriesControllerTest < ActionController::TestCase
     q = Query.find_by_name('test_new_project_private_query')
     assert_redirected_to :controller => 'issues', :action => 'index', :project_id => 'ecookbook', :query_id => q
     assert !q.is_public?
-    assert_equal q.default_columns, q.columns
+    assert q.has_default_columns?
     assert q.valid?
   end
 
@@ -152,7 +152,7 @@ class QueriesControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'issues', :action => 'index', :query_id => 4
     q = Query.find_by_name('test_edit_global_public_query')
     assert q.is_public?
-    assert_equal q.default_columns, q.columns
+    assert q.has_default_columns?
     assert q.valid?
   end
 
@@ -183,7 +183,7 @@ class QueriesControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'issues', :action => 'index', :query_id => 3
     q = Query.find_by_name('test_edit_global_private_query')
     assert !q.is_public?
-    assert_equal q.default_columns, q.columns
+    assert q.has_default_columns?
     assert q.valid?
   end
 
