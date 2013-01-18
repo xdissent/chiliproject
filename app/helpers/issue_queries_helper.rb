@@ -18,7 +18,7 @@ module IssueQueriesHelper
   # Cast custom field values.
   def query_list_item_value(name, item, query=nil)
     query ||= @query
-    if filter_custom?(name)
+    if query.filter_custom?(name)
       query.custom_value_for(name, item)
     else
       super
