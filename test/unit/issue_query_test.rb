@@ -40,10 +40,9 @@ class IssueQueryTest < ActiveSupport::TestCase
   end
 
   def find_issues_with_query(query)
-    # Issue.find :all,
-    #   :include => [ :assigned_to, :status, :tracker, :project, :priority ],
-    #   :conditions => query.to_sql
-    query.query :include => [ :assigned_to, :status, :tracker, :project, :priority ]
+    Issue.find :all,
+      :include => [ :assigned_to, :status, :tracker, :project, :priority ],
+      :conditions => query.statement
   end
 
   def assert_find_issues_with_query_is_successful(query)
@@ -53,7 +52,7 @@ class IssueQueryTest < ActiveSupport::TestCase
   end
 
   def assert_query_statement_includes(query, condition)
-    assert query.to_sql.include?(condition), "Query statement condition not found in: #{query.to_sql}"
+    assert query.statement.include?(condition), "Query statement condition not found in: #{query.statement}"
   end
 
   def test_query_should_allow_shared_versions_for_a_project_query
@@ -61,13 +60,13 @@ class IssueQueryTest < ActiveSupport::TestCase
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('fixed_version_id', '=', [subproject_version.id.to_s])
 
-    assert query.to_sql.include?("#{Issue.table_name}.fixed_version_id IN ('4')")
+    assert query.statement.include?("#{Issue.table_name}.fixed_version_id IN ('4')")
   end
 
   def test_query_with_multiple_custom_fields
     query = IssueQuery.find(1)
     assert query.valid?
-    assert query.to_sql.include?("#{CustomValue.table_name}.value IN ('MySQL')")
+    assert query.statement.include?("#{CustomValue.table_name}.value IN ('MySQL')")
     issues = find_issues_with_query(query)
     assert_equal 1, issues.length
     assert_equal Issue.find(3), issues.first
@@ -77,8 +76,8 @@ class IssueQueryTest < ActiveSupport::TestCase
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('fixed_version_id', '!*', [''])
     query.add_filter('cf_1', '!*', [''])
-    assert query.to_sql.include?("#{Issue.table_name}.fixed_version_id IS NULL")
-    assert query.to_sql.include?("(#{CustomValue.table_name}.value IS NULL) OR #{CustomValue.table_name}.value = ''")
+    assert query.statement.include?("#{Issue.table_name}.fixed_version_id IS NULL")
+    assert query.statement.include?("(#{CustomValue.table_name}.value IS NULL) OR #{CustomValue.table_name}.value = ''")
     find_issues_with_query(query)
   end
 
@@ -94,43 +93,43 @@ class IssueQueryTest < ActiveSupport::TestCase
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('fixed_version_id', '*', [''])
     query.add_filter('cf_1', '*', [''])
-    assert query.to_sql.include?("#{Issue.table_name}.fixed_version_id IS NOT NULL")
-    assert query.to_sql.include?("(#{CustomValue.table_name}.value IS NOT NULL) AND #{CustomValue.table_name}.value <> ''")
+    assert query.statement.include?("#{Issue.table_name}.fixed_version_id IS NOT NULL")
+    assert query.statement.include?("(#{CustomValue.table_name}.value IS NOT NULL) AND #{CustomValue.table_name}.value <> ''")
     find_issues_with_query(query)
   end
 
   def test_operator_greater_than
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('done_ratio', '>=', ['40'])
-    assert query.to_sql.include?("#{Issue.table_name}.done_ratio >= 40")
+    assert query.statement.include?("#{Issue.table_name}.done_ratio >= 40")
     find_issues_with_query(query)
   end
 
   def test_operator_date_equals
     query = IssueQuery.new(:name => '_')
     query.add_filter('due_date', '=', ['2011-07-10'])
-    assert_match /issues\.due_date > '2011-07-09 23:59:59(\.9+)?' AND issues\.due_date <= '2011-07-10 23:59:59(\.9+)?/, query.to_sql
+    assert_match /issues\.due_date > '2011-07-09 23:59:59(\.9+)?' AND issues\.due_date <= '2011-07-10 23:59:59(\.9+)?/, query.statement
     find_issues_with_query(query)
   end
 
   def test_operator_date_lesser_than
     query = IssueQuery.new(:name => '_')
     query.add_filter('due_date', '<=', ['2011-07-10'])
-    assert_match /issues\.due_date <= '2011-07-10 23:59:59(\.9+)?/, query.to_sql
+    assert_match /issues\.due_date <= '2011-07-10 23:59:59(\.9+)?/, query.statement
     find_issues_with_query(query)
   end
 
   def test_operator_date_greater_than
     query = IssueQuery.new(:name => '_')
     query.add_filter('due_date', '>=', ['2011-07-10'])
-    assert_match /issues\.due_date > '2011-07-09 23:59:59(\.9+)?'/, query.to_sql
+    assert_match /issues\.due_date > '2011-07-09 23:59:59(\.9+)?'/, query.statement
     find_issues_with_query(query)
   end
 
   def test_operator_date_between
     query = IssueQuery.new(:name => '_')
     query.add_filter('due_date', '><', ['2011-06-23', '2011-07-10'])
-    assert_match /issues\.due_date > '2011-06-22 23:59:59(\.9+)?' AND issues\.due_date <= '2011-07-10 23:59:59(\.9+)?/, query.to_sql
+    assert_match /issues\.due_date > '2011-06-22 23:59:59(\.9+)?' AND issues\.due_date <= '2011-07-10 23:59:59(\.9+)?/, query.statement
     find_issues_with_query(query)
   end
 
@@ -164,7 +163,7 @@ class IssueQueryTest < ActiveSupport::TestCase
     Issue.find(7).update_attribute(:due_date, (Date.today - 10))
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('due_date', '<t-', ['10'])
-    assert query.to_sql.include?("#{Issue.table_name}.due_date <=")
+    assert query.statement.include?("#{Issue.table_name}.due_date <=")
     issues = find_issues_with_query(query)
     assert !issues.empty?
     issues.each {|issue| assert(issue.due_date <= (Date.today - 10))}
@@ -211,7 +210,7 @@ class IssueQueryTest < ActiveSupport::TestCase
   def test_operator_contains
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('subject', '~', ['uNable'])
-    assert query.to_sql.include?("LOWER(#{Issue.table_name}.subject) LIKE '%unable%'")
+    assert query.statement.include?("LOWER(#{Issue.table_name}.subject) LIKE '%unable%'")
     result = find_issues_with_query(query)
     assert result.empty?
     result.each {|issue| assert issue.subject.downcase.include?('unable') }
@@ -220,7 +219,7 @@ class IssueQueryTest < ActiveSupport::TestCase
   def test_operator_does_not_contains
     query = IssueQuery.new(:project => Project.find(1), :name => '_')
     query.add_filter('subject', '!~', ['uNable'])
-    assert query.to_sql.include?("LOWER(#{Issue.table_name}.subject) NOT LIKE '%unable%'")
+    assert query.statement.include?("LOWER(#{Issue.table_name}.subject) NOT LIKE '%unable%'")
     find_issues_with_query(query)
   end
 
@@ -241,7 +240,7 @@ class IssueQueryTest < ActiveSupport::TestCase
     assert filter[:choices].map{|v| v[1]}.include?('me')
 
     query.filters = { "cf_#{cf.id}".to_sym => {:operator => '=', :values => ['me']}}
-    result = query.query :include => [:project]
+    result = query.issues
     assert_equal 1, result.size
     assert_equal issue, result.first
   end
@@ -275,12 +274,13 @@ class IssueQueryTest < ActiveSupport::TestCase
     q = IssueQuery.new
     q.columns = ['tracker', :subject, '', 'unknonw_column']
     assert_equal [:tracker, :subject], q.columns
-    assert q.has_column?(q.columns.first)
+    c = q.columns.first
+    assert q.has_column?(c)
   end
 
   def test_groupable_columns_should_include_custom_fields
     q = IssueQuery.new
-    assert q.groupable_columns.include?(:cf_1)
+    assert q.groupable_columns.detect {|c| q.filter_custom?(c)}
   end
 
   def test_grouped_with_valid_column
@@ -288,15 +288,15 @@ class IssueQueryTest < ActiveSupport::TestCase
     assert q.grouped?
     assert_not_nil q.groupable_for(:status)
     assert_equal :status, q.group_by
-    assert_not_nil q.group_by_clause
-    assert_equal 'status', q.group_by_clause
+    assert_not_nil q.group_by_statement
+    assert_equal 'status', q.group_by_statement
   end
 
   def test_grouped_with_invalid_column
     q = IssueQuery.new(:group_by => 'foo')
     assert !q.grouped?
     assert_nil q.groupable_for(:foo)
-    assert_nil q.group_by_clause
+    assert_nil q.group_by_statement
   end
 
   def test_default_sort
@@ -318,7 +318,7 @@ class IssueQueryTest < ActiveSupport::TestCase
 
   def test_create_query_with_sort
     q = IssueQuery.new(:name => 'Sorted')
-    q.sort_criteria = [[:priority, 'desc'], :tracker]
+    q.sort_criteria = [['priority', 'desc'], 'tracker']
     assert q.save
     q.reload
     assert_equal [[:priority, 'desc'], [:tracker, 'asc']], q.sort_criteria
@@ -326,45 +326,42 @@ class IssueQueryTest < ActiveSupport::TestCase
 
   def test_sort_by_string_custom_field_asc
     q = IssueQuery.new
-    c = q.available_filters.keys.find { |name| q.format_for(name) == 'string' }
-    assert q.filter_available?(c)
-    assert q.column_available?(c)
+    c = q.available_columns.keys.find {|col| q.filter_custom?(col) && q.format_for(col) == 'string' }
+    assert c
     assert q.sortable_for(c)
     issues = Issue.find :all,
                         :include => [ :assigned_to, :status, :tracker, :project, :priority ],
-                        :conditions => q.to_sql,
+                        :conditions => q.statement,
                         :order => "#{q.sortable_for(c)} ASC"
-    values = issues.map { |i| i.custom_value_for(q.filter_for(c)[:custom_field]).to_s }
+    values = issues.collect {|i| i.custom_value_for(q.custom_for(c)).to_s}
     assert !values.empty?
     assert_equal values.sort, values
   end
 
   def test_sort_by_string_custom_field_desc
     q = IssueQuery.new
-    c = q.available_filters.keys.find { |name| q.format_for(name) == 'string' }
-    assert q.filter_available?(c)
-    assert q.column_available?(c)
+    c = q.available_columns.keys.find {|col| q.filter_custom?(col) && q.format_for(col) == 'string' }
+    assert c
     assert q.sortable_for(c)
     issues = Issue.find :all,
                         :include => [ :assigned_to, :status, :tracker, :project, :priority ],
-                        :conditions => q.to_sql,
+                        :conditions => q.statement,
                         :order => "#{q.sortable_for(c)} DESC"
-    values = issues.map { |i| i.custom_value_for(q.filter_for(c)[:custom_field]).to_s }
+    values = issues.collect {|i| i.custom_value_for(q.custom_for(c)).to_s}
     assert !values.empty?
     assert_equal values.sort.reverse, values
   end
 
   def test_sort_by_float_custom_field_asc
     q = IssueQuery.new
-    c = q.available_filters.keys.find { |name| q.format_for(name) == 'float' }
-    assert q.filter_available?(c)
-    assert q.column_available?(c)
+    c = q.available_columns.keys.find {|col| q.filter_custom?(col) && q.format_for(col) == 'float' }
+    assert c
     assert q.sortable_for(c)
     issues = Issue.find :all,
                         :include => [ :assigned_to, :status, :tracker, :project, :priority ],
-                        :conditions => q.to_sql,
+                        :conditions => q.statement,
                         :order => "#{q.sortable_for(c)} ASC"
-    values = issues.collect {|i| begin; Kernel.Float(i.custom_value_for(q.filter_for(c)[:custom_field]).to_s); rescue; nil; end}.compact
+    values = issues.collect {|i| begin; Kernel.Float(i.custom_value_for(q.custom_for(c)).to_s); rescue; nil; end}.compact
     assert !values.empty?
     assert_equal values.sort, values
   end
@@ -372,13 +369,13 @@ class IssueQueryTest < ActiveSupport::TestCase
   def test_invalid_query_should_raise_query_statement_invalid_error
     q = IssueQuery.new
     assert_raise ActsAsQueryable::Query::StatementInvalid do
-      q.query(:conditions => "foo = 1")
+      q.issues(:conditions => "foo = 1")
     end
   end
 
   def test_issue_count_by_association_group
     q = IssueQuery.new(:name => '_', :group_by => 'assigned_to')
-    count_by_group = q.count_by_group :include => [ :assigned_to, :status, :tracker, :project, :priority ]
+    count_by_group = q.issue_count_by_group
     assert_kind_of Hash, count_by_group
     assert_equal %w(NilClass User), count_by_group.keys.collect {|k| k.class.name}.uniq.sort
     assert_equal %w(Fixnum), count_by_group.values.collect {|k| k.class.name}.uniq
@@ -387,7 +384,7 @@ class IssueQueryTest < ActiveSupport::TestCase
 
   def test_issue_count_by_list_custom_field_group
     q = IssueQuery.new(:name => '_', :group_by => 'cf_1')
-    count_by_group = q.count_by_group :include => [ :assigned_to, :status, :tracker, :project, :priority ]
+    count_by_group = q.issue_count_by_group
     assert_kind_of Hash, count_by_group
     assert_equal %w(NilClass String), count_by_group.keys.collect {|k| k.class.name}.uniq.sort
     assert_equal %w(Fixnum), count_by_group.values.collect {|k| k.class.name}.uniq
@@ -396,7 +393,7 @@ class IssueQueryTest < ActiveSupport::TestCase
 
   def test_issue_count_by_date_custom_field_group
     q = IssueQuery.new(:name => '_', :group_by => 'cf_8')
-    count_by_group = q.count_by_group :include => [ :assigned_to, :status, :tracker, :project, :priority ]
+    count_by_group = q.issue_count_by_group
     assert_kind_of Hash, count_by_group
     assert_equal %w(Date NilClass), count_by_group.keys.collect {|k| k.class.name}.uniq.sort
     assert_equal %w(Fixnum), count_by_group.values.collect {|k| k.class.name}.uniq
@@ -703,6 +700,7 @@ class IssueQueryTest < ActiveSupport::TestCase
       should "return no results on empty set" do
         @query = IssueQuery.new(:name => '_')
         @query.add_filter('member_of_group', '=', [@empty_group.id.to_s])
+
         assert_query_statement_includes @query, "(0=1)"
         assert find_issues_with_query(@query).empty?
       end
