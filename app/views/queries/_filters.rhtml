@@ -114,7 +114,7 @@ Event.observe(document,"dom:loaded", apply_filters_observer);
 <tr>
 <td>
 <table>
-<% query.available_filters_sorted.each do |filter| %>
+<% query.available_filters.sort{|a,b| a[1][:order]<=>b[1][:order]}.each do |filter| %>
     <% field = filter[0]
        options = filter[1] %>
     <tr <%= 'style="display:none;"' unless query.has_filter?(field) %> id="tr_<%= field %>" class="filter">
@@ -124,14 +124,14 @@ Event.observe(document,"dom:loaded", apply_filters_observer);
     </td>
     <td style="width:150px;">
         <%= label_tag "operators_#{field}", l(:description_filter), :class => "hidden-for-sighted" %>
-        <%= query_filter_operator_select(field, query) %>
+        <%= select_tag "op[#{field}]", options_for_select(operators_for_select(options[:type]), query.operator_for(field)), :id => "operators_#{field}", :onchange => "toggle_operator('#{field}');", :class => "select-small", :style => "vertical-align: top;" %>
     </td>
     <td>
     <div id="div_values_<%= field %>" style="display:none;">
     <% case options[:type]
     when :list, :list_optional, :list_status, :list_subprojects %>
         <span class="span_values_<%= field %>">
-        	<%= select_tag "v[#{field}][]", options_for_select(options[:choices], query.values_for(field)), :class => "values_#{field}", :id => "values_#{field}_1", :multiple => (query.values_for(field) && query.values_for(field).length > 1) %>
+        	<%= select_tag "v[#{field}][]", options_for_select(options[:values], query.values_for(field)), :class => "values_#{field}", :id => "values_#{field}_1", :multiple => (query.values_for(field) && query.values_for(field).length > 1) %>
           <%= link_to_function image_tag('bullet_toggle_plus.png'), "toggle_multi_select('values_#{field}_1');", :style => "vertical-align: bottom;" %>
         </span>
     <% when :date, :date_past %>
