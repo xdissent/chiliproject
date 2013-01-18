@@ -72,7 +72,7 @@ class IssueQuery < Query
   end
 
   def cast_value_for(name, value)
-    custom = custom_for(name) || return value
+    custom = custom_for(name) || (return value)
     custom.cast_value(value)
   end
 
