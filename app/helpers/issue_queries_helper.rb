@@ -15,6 +15,16 @@
 module IssueQueriesHelper
   include QueriesHelper
 
+  # Cast custom field values.
+  def query_list_item_value(name, item, query=nil)
+    query ||= @query
+    if filter_custom?(name)
+      query.custom_value_for(name, item)
+    else
+      super
+    end
+  end
+
   # Issue-specific list column value transformations.
   def query_list_item_value_content(value, name, item, query=nil)
     query ||= @query

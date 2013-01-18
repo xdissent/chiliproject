@@ -71,18 +71,9 @@ module QueriesHelper
     label_tag "group_by", l(:field_group_by)
   end
 
-  def query_list_item_value(name, item, query=nil)
-    query ||= @query
-    if filter_custom?(name)
-      query.custom_value_for(name, item)
-    else
-      super
-    end
-  end
-
   def query_apply_button(query=nil, options={})
     query ||= @query
-    link_to_remote qt(:button_apply), { 
+    link_to_remote l(:button_apply), { 
       :url => { :set_filter => 1 },
       :before => "selectAllOptions('selected_columns');",
       :update => "content",
