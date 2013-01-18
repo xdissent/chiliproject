@@ -231,11 +231,11 @@ module Redmine
         issues.each do |issue|
           if query.grouped?
             if query.filter_custom?(query.group_by)
-              group = query.custom_value_for(group_by, issue)
+              group = query.custom_value_for(query.group_by, issue)
             else
               group = issue.try(query.group_by)
             end
-            if != previous_group
+            if group != previous_group
               pdf.SetFontStyle('B',9)
               pdf.RDMCell(277, row_height,
                 (group.blank? ? 'None' : group.to_s) + " (#{query.issue_count_by_group[group]})",
