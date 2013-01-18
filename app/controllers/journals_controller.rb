@@ -21,11 +21,10 @@ class JournalsController < ApplicationController
   before_filter :authorize, :only => [:new, :edit, :diff]
   accept_key_auth :index
   menu_item :issues
+  queryable Issue, :only => :index
 
   include IssueQueriesHelper
   include SortHelper
-
-  queryable Issue
 
   def index
     sort_init 'id', 'desc'

@@ -440,7 +440,7 @@ class ApplicationController < ActionController::Base
 
   # Rescues an invalid query statement. Just in case...
   def query_statement_invalid(exception)
-    logger.error "Query::StatementInvalid: #{exception.message}" if logger
+    logger.error "ActsAsQueryable::Query::StatementInvalid: #{exception.message}" if logger
     session.delete(:query)
     sort_clear if respond_to?(:sort_clear)
     render_error "An error occurred while executing the query and has been logged. Please report this error to your administrator."

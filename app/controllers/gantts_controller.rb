@@ -14,14 +14,14 @@
 
 class GanttsController < ApplicationController
   menu_item :gantt
+  before_filter :find_optional_project
+  queryable Issue
 
-  rescue_from Query::StatementInvalid, :with => :query_statement_invalid
+  rescue_from ActsAsQueryable::Query::StatementInvalid, :with => :query_statement_invalid
 
   include IssueQueriesHelper
   include SortHelper
   include Redmine::Export::PDF
-
-  queryable Issue
 
   def show
     @gantt = Redmine::Helpers::Gantt.new(params)

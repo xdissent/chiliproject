@@ -25,10 +25,9 @@ class IssuesController < ApplicationController
   before_filter :check_for_default_issue_status, :only => [:new, :create]
   before_filter :build_new_issue_from_params, :only => [:new, :create]
   accept_key_auth :index, :show, :create, :update, :destroy
+  queryable :only => :index
 
-  rescue_from Query::StatementInvalid, :with => :query_statement_invalid
-
-  queryable
+  rescue_from ActsAsQueryable::Query::StatementInvalid, :with => :query_statement_invalid
 
   include JournalsHelper
   include ProjectsHelper
@@ -52,9 +51,7 @@ class IssuesController < ApplicationController
 
   def index
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
-    sort_update(@query.sortable_columns.inject({}) { |h, name|
-      h[name.to_s] = @query.sortable_for(name); h
-    })
+    sort_update(@query.sort_helper)
 
     if @query.valid?
       case params[:format]
@@ -68,14 +65,14 @@ class IssuesController < ApplicationController
         @limit = per_page_option
       end
 
-      @issue_count = @query.count :include => [:status, :project]
+      @issue_count = @query.issue_count
       @issue_pages = Paginator.new self, @issue_count, @limit, params['page']
       @offset ||= @issue_pages.current.offset
-      @issues = @query.query(:include => [:status, :project, :assigned_to, :tracker, :priority, :category, :fixed_version],
+      @issues = @query.issues(:include => [:assigned_to, :tracker, :priority, :category, :fixed_version],
                               :order => sort_clause,
                               :offset => @offset,
                               :limit => @limit)
-      @issue_count_by_group = @query.count_by_group :include => [:status, :project]
+      @issue_count_by_group = @query.issue_count_by_group
 
       respond_to do |format|
         format.html { render :template => 'issues/index.rhtml', :layout => !request.xhr? }
