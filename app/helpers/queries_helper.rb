@@ -101,4 +101,50 @@ module QueriesHelper
       super
     end
   end
+
+  def find_query
+    @queryable_class = self.class.read_inheritable_attribute :queryable
+    return unless @queryable_class && @queryable_class.queryable?
+    @query_class ||= @queryable_class.query_class
+    return unless @query_class
+
+    if !params[:query_id].blank?
+      super
+      render_404 unless @query && @query.project_id == @project.id
+      session[query_session_key][:project_id] = @query.project_id
+      sort_clear
+    else
+      if api_request? || params[:set_filter] || session[query_session_key].nil? || session[query_session_key][:project_id] != (@project ? @project.id : nil)
+        # Give it a name, required to be valid
+        @query = @query_class.new(:name => "_")
+        @query.project = @project
+        if params[:fields] || params[:f]
+          @query.filters = {}
+          @query.add_filters(params[:fields] || params[:f], params[:operators] || params[:op], params[:values] || params[:v])
+        else
+          @query.available_filters.keys.each do |field|
+            @query.add_short_filter(field, params[field]) if params[field]
+          end
+        end
+        @query.group_by = params[:group_by]
+        @query.display_subprojects = params[:display_subprojects] if params[:display_subprojects]
+        @query.columns = params[:c] || (params[:query] && params[:query][:columns])
+        session[query_session_key] = {:project_id => @query.project_id, :filters => @query.filters, :group_by => @query.group_by, :columns => @query.columns, :display_subprojects => @query.display_subprojects}
+      else
+        @query = @query_class.find_by_id(session[query_session_key][:id]) if session[query_session_key][:id]
+        @query ||= @query_class.new(:name => "_", :project => @project, :filters => session[query_session_key][:filters], :group_by => session[query_session_key][:group_by], :columns => session[query_session_key][:columns], :display_subprojects => session[query_session_key][:display_subprojects])
+        @query.project = @project
+      end
+    end
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  # Rescues an invalid query statement. Just in case...
+  def query_statement_invalid(exception)
+    logger.error "ActsAsQueryable::Query::StatementInvalid: #{exception.message}" if logger
+    session.delete(query_session_key)
+    sort_clear if respond_to?(:sort_clear)
+    render_error "An error occurred while executing the query and has been logged. Please report this error to your administrator."
+  end
 end
