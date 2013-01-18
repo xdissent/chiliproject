@@ -132,9 +132,11 @@ module QueriesHelper
     return unless @query_class
 
     if !params[:query_id].blank?
-      super
-      render_404 unless @query && @project && @query.project_id == @project.id
-      session[query_session_key][:project_id] = @query.project_id
+      cond = "project_id IS NULL"
+      cond << " OR project_id = #{@project.id}" if @project
+      @query = @query_class.find(params[:query_id], :conditions => cond)
+      @query.project = @project
+      session[:query] = {:id => @query.id, :project_id => @query.project_id}
       sort_clear
     else
       if api_request? || params[:set_filter] || session[query_session_key].nil? || session[query_session_key][:project_id] != (@project ? @project.id : nil)

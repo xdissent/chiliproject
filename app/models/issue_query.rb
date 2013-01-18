@@ -31,6 +31,13 @@ class IssueQuery < Query
     [:id] + super
   end
 
+  def sort_helper
+    sortable_columns.inject({}) do |h, name|
+      h[name.to_s] = sortable_for(name)
+      h
+    end.merge('id' => "#{queryable_class.table_name}.id")
+  end
+
   # Allow blank for open/closed operators.
   def blank_allowed?(name)
     super || ["o", "c"].include?(operator_for(name))
@@ -216,7 +223,8 @@ class IssueQuery < Query
   end
 
   def count_by_group(options={})
-    return super unless grouped? && filter_custom?(group_by)
+    return nil unless grouped?
+    return super unless filter_custom?(group_by)
     options[:include] ||= []
     counts = super
     counts.keys.inject({}) { |h, k| h[cast_value_for(group_by, k)] = counts[k]; h }
