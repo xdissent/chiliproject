@@ -202,7 +202,7 @@ class IssueQuery < Query
     Version.find :all, :include => :project,
                        :conditions => self.class.merge_conditions(project_statement, options[:conditions])
   rescue ::ActiveRecord::StatementInvalid => e
-    raise Query::StatementInvalid.new(e.message)
+    raise ActsAsQueryable::Query::StatementInvalid.new(e.message)
   end
 
   # Returns the journals
@@ -214,7 +214,7 @@ class IssueQuery < Query
                        :limit => options[:limit],
                        :offset => options[:offset]
   rescue ::ActiveRecord::StatementInvalid => e
-    raise Query::StatementInvalid.new(e.message)
+    raise ActsAsQueryable::Query::StatementInvalid.new(e.message)
   end
 
 end
