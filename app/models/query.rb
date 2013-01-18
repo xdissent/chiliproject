@@ -33,12 +33,17 @@ class Query < QueryableQuery
     self.display_subprojects ||= Setting.display_subprojects_issues?
   end
 
+  def after_initialize
+    # Store the fact that project is nil (used in #editable_by?)
+    @is_for_all = project.nil?
+  end
+
   def editable_by?(user)
     return false unless user
     # Admin can edit them all and regular users can edit their private queries
     return true if user.admin? || (!is_public && self.user_id == user.id)
     # Members can not edit public queries that are for all project (only admin is allowed to)
-    is_public && project && user.allowed_to?(:manage_public_queries, project)
+    is_public && !@is_for_all && user.allowed_to?(:manage_public_queries, project)
   end
 
   def user_values
@@ -58,8 +63,8 @@ class Query < QueryableQuery
   end
 
   def sort_helper
-    @query.sortable_columns.inject({}) do |h, name|
-      h[name.to_s] = @query.sortable_for(name)
+    sortable_columns.inject({}) do |h, name|
+      h[name.to_s] = sortable_for(name)
       h
     end
   end
@@ -79,8 +84,6 @@ class Query < QueryableQuery
   def filter_label_for(name)
     filter_for(name)[:label] || l("field_#{name}".gsub(/_id$/, '').to_sym, :default => label_for(name))
   end
-
-private
 
   def sql_for(name, operator=nil, values=nil, table=nil, field=nil, type=nil)
     return nil if name == :subproject_id
