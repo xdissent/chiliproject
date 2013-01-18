@@ -171,7 +171,7 @@ class IssueQuery < Query
         when "<>"
           sql = "CAST(#{CustomValue.table_name}.value AS decimal(60,3)) BETWEEN #{values[0].to_i} AND #{values[1].to_i}"
         end
-        return "#{table}.id IN (SELECT #{table}.id FROM #{table} LEFT OUTER JOIN #{CustomValue.table_name} ON #{CustomValue.table_name}.customized_type='#{queryable_class.name}' AND #{CustomValue.table_name}.customized_id=#{table}.id AND #{CustomValue.table_name}.custom_field_id=#{cf.id} WHERE #{sql})"
+        return "#{table}.id IN (SELECT #{table}.id FROM #{table} LEFT OUTER JOIN #{CustomValue.table_name} ON #{CustomValue.table_name}.customized_type='#{queryable_class.name}' AND #{CustomValue.table_name}.customized_id=#{table}.id AND #{CustomValue.table_name}.custom_field_id=#{custom_for(name).id} WHERE #{sql})"
       end
     end
 
@@ -222,11 +222,29 @@ class IssueQuery < Query
     counts.keys.inject({}) { |h, k| h[cast_value_for(group_by, k)] = counts[k]; h }
   end
 
-  # Returns the versions
-  # Valid options are :conditions
-  def versions(options={})
-    Version.find :all, :include => :project,
-                       :conditions => self.class.merge_conditions(project_statement, options[:conditions])
+  # Returns the issue count
+  def issue_count
+    Issue.count(:include => [:status, :project], :conditions => statement)
+  rescue ::ActiveRecord::StatementInvalid => e
+    raise ActsAsQueryable::Query::StatementInvalid.new(e.message)
+  end
+
+  # Returns the issue count by group or nil if query is not grouped
+  def issue_count_by_group
+    count_by_group(:include => [:status, :project])
+  end
+
+  # Returns the issues
+  # Valid options are :order, :offset, :limit, :include, :conditions
+  def issues(options={})
+    order_option = [group_by_sort_clause, options[:order]].reject {|s| s.blank?}.join(',')
+    order_option = nil if order_option.blank?
+
+    Issue.find :all, :include => ([:status, :project] + (options[:include] || [])).uniq,
+                     :conditions => self.class.merge_conditions(statement, options[:conditions]),
+                     :order => order_option,
+                     :limit  => options[:limit],
+                     :offset => options[:offset]
   rescue ::ActiveRecord::StatementInvalid => e
     raise ActsAsQueryable::Query::StatementInvalid.new(e.message)
   end
@@ -235,12 +253,29 @@ class IssueQuery < Query
   # Valid options are :order, :offset, :limit
   def issue_journals(options={})
     IssueJournal.find :all, :joins => [:user, {:issue => [:project, :author, :tracker, :status]}],
-                       :conditions => to_sql,
+                       :conditions => statement,
                        :order => options[:order],
                        :limit => options[:limit],
                        :offset => options[:offset]
   rescue ::ActiveRecord::StatementInvalid => e
     raise ActsAsQueryable::Query::StatementInvalid.new(e.message)
+  end
+
+  # Returns the versions
+  # Valid options are :conditions
+  def versions(options={})
+    Version.find :all, :include => :project,
+                       :conditions => Query.merge_conditions(project_statement, options[:conditions])
+  rescue ::ActiveRecord::StatementInvalid => e
+    raise ActsAsQueryable::Query::StatementInvalid.new(e.message)
+  end
+
+  def statement
+    to_sql
+  end
+
+  def group_by_statement
+    group_by_clause
   end
 
 end
