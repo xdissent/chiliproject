@@ -26,32 +26,58 @@ class IssueQuery < Query
     Hash[cf_columns]
   end
 
+  # ID is always sortable.
   def sortable_columns
     [:id] + super
   end
 
+  # Allow blank for open/closed operators.
   def blank_allowed?(name)
     super || ["o", "c"].include?(operator_for(name))
   end
 
+  # Grab default column list from settings.
   def default_columns
     available_columns.map do |n, c|
       n if (Setting.issue_list_default_columns.include?(n.to_s) || (n == :project && project.nil?))
     end.compact
   end
 
+  # Add available custom field filters.
   def available_filters
     super.merge available_custom_field_filters
   end
 
+  # Overridden to add open/closed operators.
   def add_short_filter(name, expression)
     return unless expression
     parms = expression.scan(/^(o|c|!\*|!|\*)?(.*)$/).first
     add_filter name, (parms[0] || "="), [parms[1] || ""]
   end
 
+  # Fetch the custom field for a filter from available_filters.
+  def custom_for(name)
+    filter_for(name)[:custom_field]
+  end
+
   def format_for(name)
-    filter_for(name)[:format]
+    custom = custom_for(name) || return
+    custom.field_format if custom
+  end
+
+  def custom_value_for(name, item)
+    custom = custom_for(name) || return
+    custom_value = item.custom_values.detect { |v| v.custom_field_id == custom.id } || return
+    cast_value_for(name, custom_value.value)
+  end
+
+  def cast_value_for(name, value)
+    custom = custom_for(name) || return value
+    custom.cast_value(value)
+  end
+
+  def filter_custom?(name)
+    !!custom_for(name)
   end
 
   def sql_for(name, operator=nil, values=nil, table=nil, field=nil, type=nil)
@@ -130,7 +156,7 @@ class IssueQuery < Query
 
     else
       # custom field
-      if (cf = filter_for(name)[:custom_field]) # && !values_blank?(name, values)
+      if filter_custom? name
         sql = sql_for :value, operator, values, CustomValue.table_name
 
         case operator
@@ -185,15 +211,15 @@ class IssueQuery < Query
       else
         options = { :type => :string, :order => 20 }
       end
-      ["cf_#{field.id}".to_sym, options.merge({ :name => field.name, :format => field.field_format, :custom_field => field, :label => field.name })]
+      ["cf_#{field.id}".to_sym, options.merge({ :name => field.name, :custom_field => field, :label => field.name })]
     end.compact]
   end
 
   def count_by_group(options={})
-    return super unless grouped? && (cf = filter_for(group_by)[:custom_field])
+    return super unless grouped? && filter_custom?(group_by)
     options[:include] ||= []
-    r = super
-    r.keys.inject({}) { |h, k| h[cf.cast_value(k)] = r[k]; h }
+    counts = super
+    counts.keys.inject({}) { |h, k| h[cast_value_for(group_by, k)] = counts[k]; h }
   end
 
   # Returns the versions
