@@ -48,23 +48,23 @@ class Issue < ActiveRecord::Base
                                                 t }
 
   acts_as_queryable :columns => {
-      :project => {:sortable => "#{Project.table_name}.name", :groupable => "#{::Issue.table_name}.project_id"},
+      :project => {:sortable => "#{Project.table_name}.name", :groupable => true},
       :tracker => {:sortable => "#{Tracker.table_name}.position", :groupable => true},
-      :parent => {:sortable => ["#{::Issue.table_name}.root_id", "#{::Issue.table_name}.lft ASC"], :default_order => 'desc', :label => l(:field_parent_issue)},
+      :parent => {:sortable => ["#{table_name}.root_id", "#{table_name}.lft ASC"], :default_order => 'desc', :label => l(:field_parent_issue)},
       :status => {:sortable => "#{IssueStatus.table_name}.position", :groupable => true},
       :priority => {:sortable => "#{IssuePriority.table_name}.position", :default_order => 'desc', :groupable => true},
-      :subject => {:sortable => "#{::Issue.table_name}.subject"},
+      :subject => {:sortable => true},
       :author => {},
       :assigned_to => {:sortable => ["#{User.table_name}.lastname", "#{User.table_name}.firstname", "#{User.table_name}.id"], :groupable => true},
-      :updated_on => {:sortable => "#{::Issue.table_name}.updated_on", :default_order => 'desc'},
+      :updated_on => {:sortable => true, :default_order => 'desc'},
       :category => {:sortable => "#{IssueCategory.table_name}.name", :groupable => true},
       :fixed_version => {:sortable => ["#{Version.table_name}.effective_date", "#{Version.table_name}.name"], :default_order => 'desc', :groupable => true},
       # Put empty start_dates and due_dates in the far future rather than in the far past
-      :start_date => {:sortable => ["CASE WHEN #{::Issue.table_name}.start_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.start_date"]},
-      :due_date => {:sortable => ["CASE WHEN #{::Issue.table_name}.due_date IS NULL THEN 1 ELSE 0 END", "#{::Issue.table_name}.due_date"]},
-      :estimated_hours => {:sortable => "#{::Issue.table_name}.estimated_hours"},
-      :done_ratio => {:sortable => "#{::Issue.table_name}.done_ratio", :groupable => true},
-      :created_on => {:sortable => "#{::Issue.table_name}.created_on", :default_order => 'desc'},
+      :start_date => {:sortable => ["CASE WHEN #{table_name}.start_date IS NULL THEN 1 ELSE 0 END", "#{table_name}.start_date"]},
+      :due_date => {:sortable => ["CASE WHEN #{table_name}.due_date IS NULL THEN 1 ELSE 0 END", "#{table_name}.due_date"]},
+      :estimated_hours => {:sortable => true},
+      :done_ratio => {:sortable => true, :groupable => true},
+      :created_on => {:sortable => true, :default_order => 'desc'},
     }, :operators => {
       "o" => :label_open_issues,
       "c" => :label_closed_issues
