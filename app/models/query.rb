@@ -63,10 +63,12 @@ class Query < QueryableQuery
   end
 
   def sort_helper
-    sortable_columns.inject({}) do |h, name|
+    sh = sortable_columns.inject({}) do |h, name|
       h[name.to_s] = sortable_for(name)
       h
     end
+    sh['id'] = "#{queryable_class.table_name}.id"
+    sh
   end
 
   def to_sql
