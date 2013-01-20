@@ -52,7 +52,8 @@ class IssueQuery < Query
 
   # Add available custom field filters.
   def available_filters
-    super.merge available_custom_field_filters
+    return @available_filters if @available_filters
+    @available_filters = super.merge available_custom_field_filters
   end
 
   # Overridden to add open/closed operators.
@@ -158,8 +159,8 @@ class IssueQuery < Query
       return sql_for :assigned_to_id, operator, members_of_roles
 
     when :status_id
-      return "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if operator == "o"
-      return "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if operator == "c"
+      return "#{table}.#{field} IN (SELECT #{IssueStatus.table_name}.id FROM #{IssueStatus.table_name} WHERE #{IssueStatus.table_name}.is_closed=#{connection.quoted_false})" if operator == "o"
+      return "#{table}.#{field} IN (SELECT #{IssueStatus.table_name}.id FROM #{IssueStatus.table_name} WHERE #{IssueStatus.table_name}.is_closed=#{connection.quoted_true})" if operator == "c"
 
     else
       # custom field
