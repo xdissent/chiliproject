@@ -2,7 +2,7 @@
 #-- copyright
 # ChiliProject is a project management system.
 #
-# Copyright (C) 2010-2012 the ChiliProject Team
+# Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,8 +18,8 @@ module ChiliProject
   module VERSION #:nodoc:
 
     MAJOR = 3
-    MINOR = 3
-    PATCH = 0
+    MINOR = 5
+    PATCH = 1
     TINY  = PATCH # Redmine compat
 
     # Used by semver to define the special version (if any).
