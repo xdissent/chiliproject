@@ -121,7 +121,7 @@ class QueriesControllerTest < ActionController::TestCase
 
     query = Query.find_by_name("test_new_with_sort")
     assert_not_nil query
-    assert_equal [[:due_date, 'desc'], [:tracker, 'asc']], query.sort_criteria
+    assert_equal [[:due_date, :desc], [:tracker, :asc]], query.sort_criteria
   end
 
   def test_get_edit_global_public_query

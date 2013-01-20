@@ -306,13 +306,13 @@ class IssueQueryTest < ActiveSupport::TestCase
   def test_set_sort_criteria_with_hash
     q = IssueQuery.new
     q.sort_criteria = {'0' => ['priority', 'desc'], '2' => ['tracker']}
-    assert_equal [[:priority, 'desc'], [:tracker, 'asc']], q.sort_criteria
+    assert_equal [[:priority, :desc], [:tracker, :asc]], q.sort_criteria
   end
 
   def test_set_sort_criteria_with_array
     q = IssueQuery.new
     q.sort_criteria = [['priority', 'desc'], 'tracker']
-    assert_equal [[:priority, 'desc'], [:tracker, 'asc']], q.sort_criteria
+    assert_equal [[:priority, :desc], [:tracker, :asc]], q.sort_criteria
   end
 
   def test_create_query_with_sort
@@ -320,7 +320,7 @@ class IssueQueryTest < ActiveSupport::TestCase
     q.sort_criteria = [['priority', 'desc'], 'tracker']
     assert q.save
     q.reload
-    assert_equal [[:priority, 'desc'], [:tracker, 'asc']], q.sort_criteria
+    assert_equal [[:priority, :desc], [:tracker, :asc]], q.sort_criteria
   end
 
   def test_sort_by_string_custom_field_asc
