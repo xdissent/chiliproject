@@ -62,7 +62,12 @@ class Query < QueryableQuery
     @user_values
   end
 
-  def sort_helper
+  def sort_init(default)
+    return default if sort_criteria.blank?
+    sort_criteria.map { |n, o| [n.to_s, o.to_s] }
+  end
+
+  def sort_update
     sh = sortable_columns.inject({}) do |h, name|
       h[name.to_s] = sortable_for(name)
       h

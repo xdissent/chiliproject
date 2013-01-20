@@ -50,8 +50,8 @@ class IssuesController < ApplicationController
   verify :method => :put, :only => :update, :render => {:nothing => true, :status => :method_not_allowed }
 
   def index
-    sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
-    sort_update(@query.sort_helper)
+    sort_init @query.sort_init([['id', 'desc']])
+    sort_update(@query.sort_update)
 
     if @query.valid?
       case params[:format]
