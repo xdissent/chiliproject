@@ -17,7 +17,7 @@ class CreateJournals < ActiveRecord::Migration
   # model removed, but needed for data migration
   class IssueHistory < ActiveRecord::Base; belongs_to :issue; end
   # model removed
-  class Permission < ActiveRecord::Base; end
+  class Permission < ActiveRecord::Base; attr_protected; end
 
   def self.up
     create_table :journals, :force => true do |t|

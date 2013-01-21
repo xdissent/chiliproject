@@ -14,7 +14,7 @@
 
 class SetDocAndFilesNotifications < ActiveRecord::Migration
   # model removed
-  class Permission < ActiveRecord::Base; end
+  class Permission < ActiveRecord::Base; attr_protected; end
 
   def self.up
     Permission.find_by_controller_and_action("projects", "add_file").update_attribute(:mail_option, true)

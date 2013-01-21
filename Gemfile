@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -21,6 +21,9 @@ gem 'awesome_nested_set'
 gem 'open_id_authentication'
 gem 'gravatarify', '~> 3.0.0'
 
+gem 'prototype_legacy_helper', '0.0.0', :git => 'https://github.com/xdissent/prototype_legacy_helper.git', :branch => 'rails-3.2'
+gem 'rails_autolink'
+gem 'safe_attributes'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -42,6 +45,7 @@ group :test do
   gem 'mocha', '0.12.1'
   # capybara 2 drops ruby 1.8.7 compatibility
   gem 'capybara', '< 2.0.0'
+  gem 'pry'
 end
 
 group :ldap do

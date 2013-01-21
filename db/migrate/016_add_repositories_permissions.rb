@@ -14,7 +14,7 @@
 
 class AddRepositoriesPermissions < ActiveRecord::Migration
   # model removed
-  class Permission < ActiveRecord::Base; end
+  class Permission < ActiveRecord::Base; attr_protected; end
 
   def self.up
     Permission.create :controller => "repositories", :action => "show", :description => "button_view", :sort => 1450, :is_public => true

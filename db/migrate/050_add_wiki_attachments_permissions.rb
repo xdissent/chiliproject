@@ -14,7 +14,7 @@
 
 class AddWikiAttachmentsPermissions < ActiveRecord::Migration
   # model removed
-  class Permission < ActiveRecord::Base; end
+  class Permission < ActiveRecord::Base; attr_protected; end
 
   def self.up
     Permission.create :controller => 'wiki', :action => 'add_attachment', :description => 'label_attachment_new', :sort => 1750, :is_public => false, :mail_option => 0, :mail_enabled => 0

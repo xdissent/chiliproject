@@ -14,7 +14,7 @@
 
 class AddCommentsPermissions < ActiveRecord::Migration
   # model removed
-  class Permission < ActiveRecord::Base; end
+  class Permission < ActiveRecord::Base; attr_protected; end
 
   def self.up
     Permission.create :controller => "news", :action => "add_comment", :description => "label_comment_add", :sort => 1130, :is_public => false, :mail_option => 0, :mail_enabled => 0

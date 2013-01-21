@@ -31,9 +31,9 @@
 
 class Setup < ActiveRecord::Migration
 
-  class User < ActiveRecord::Base; end
+  class User < ActiveRecord::Base; attr_protected; end
   # model removed
-  class Permission < ActiveRecord::Base; end
+  class Permission < ActiveRecord::Base; attr_protected; end
 
   def self.up
     create_table "attachments", :force => true do |t|

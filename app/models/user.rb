@@ -505,7 +505,7 @@ class User < Principal
   def self.anonymous
     anonymous_user = AnonymousUser.find(:first)
     if anonymous_user.nil?
-      anonymous_user = AnonymousUser.create(:lastname => 'Anonymous', :firstname => '', :mail => '', :login => '', :status => 0)
+      anonymous_user = AnonymousUser.create({:lastname => 'Anonymous', :firstname => '', :mail => '', :login => '', :status => 0}, :without_protection => true)
       raise 'Unable to create the anonymous user.' if anonymous_user.new_record?
     end
     anonymous_user
@@ -561,7 +561,7 @@ class User < Principal
 
   # Returns a 128bits random salt as a hex string (32 chars long)
   def self.generate_salt
-    ActiveSupport::SecureRandom.hex(16)
+    SecureRandom.hex(16)
   end
 
 end
