@@ -26,18 +26,6 @@ class IssueQuery < Query
     Hash[cf_columns]
   end
 
-  # ID is always sortable.
-  def sortable_columns
-    [:id] + super
-  end
-
-  def sort_helper
-    sortable_columns.inject({}) do |h, name|
-      h[name.to_s] = sortable_for(name)
-      h
-    end.merge('id' => "#{queryable_class.table_name}.id")
-  end
-
   # Allow blank for open/closed operators.
   def blank_allowed?(name)
     super || ["o", "c"].include?(operator_for(name))

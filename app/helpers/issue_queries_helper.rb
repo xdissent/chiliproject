@@ -14,11 +14,11 @@
 
 module IssueQueriesHelper
   include QueriesHelper
-
   # Cast custom field values.
   def query_list_item_value(name, item, query=nil)
+    return super unless item.is_a?(Issue)
     query ||= @query
-    if query.filter_custom?(name)
+    if query.respond_to?(:filter_custom?) && query.filter_custom?(name)
       query.custom_value_for(name, item)
     else
       super
@@ -27,6 +27,7 @@ module IssueQueriesHelper
 
   # Issue-specific list column value transformations.
   def query_list_item_value_content(value, name, item, query=nil)
+    return super unless item.is_a?(Issue)
     query ||= @query
     case name
     when :subject

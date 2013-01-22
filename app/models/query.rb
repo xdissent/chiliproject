@@ -62,14 +62,21 @@ class Query < QueryableQuery
     @user_values
   end
 
-  def sort_init(default)
-    return default if sort_criteria.blank?
+  # ID is always sortable.
+  def sortable_columns
+    [:id] + super
+  end
+
+  def sort_init(*args)
+    return *args if sort_criteria.blank?
     sort_criteria.map { |n, o| [n.to_s, o.to_s] }
   end
 
   def sort_update
     sh = sortable_columns.inject({}) do |h, name|
-      h[name.to_s] = sortable_for(name)
+      sortable = sortable_for(name)
+      sortable = "#{self.queryable_class.table_name}.#{name}" if sortable == true
+      h[name.to_s] = Array(sortable).map { |s| "#{s} #{default_order_for(name)}" }.reject(&:blank?).join(',')
       h
     end
     sh['id'] = "#{queryable_class.table_name}.id"
